@@ -9,6 +9,13 @@
 
 ```
 git clone {repository URL}
+
+
+npx prisma migrate dev
+npx prisma migrate deploy  
+
+
+
 ```
 
 ## Installing NPM modules
