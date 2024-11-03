@@ -15,7 +15,7 @@ import {
 import { UsersService } from './user.service';
 import { CreateUserDto, createUserSchema, UpdatePasswordDto, updatePasswordSchema, User, userIdSchema } from '../dto/user';
 import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
-import { UserNotFoundException } from '../exceptions/user-not-found.exception';
+import { InstanceNotFoundException } from '../exceptions/instance-not-found.exception';
 import { WrongCurrentPasswordException } from '../exceptions/wrong-current-password.exception';
 import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
 import { BadRequestParamsException } from 'src/exceptions/bad-request-params.exception';
@@ -39,7 +39,7 @@ export class UsersController {
   async getUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string): Promise<User> {
     const user: User | null = await this.usersService.getUser(id);
     if (!user)
-      throw new UserNotFoundException();
+      throw new InstanceNotFoundException('user');
     return user;
   }
 
@@ -64,12 +64,12 @@ export class UsersController {
   {
     const existingUserRecord: User | null = await this.usersService.getUser(id);
     if (!existingUserRecord)
-      throw new UserNotFoundException();
+      throw new InstanceNotFoundException('user');
     if (existingUserRecord.password !== updatePasswordDto.oldPassword)
       throw new WrongCurrentPasswordException();
     const user: User | null = await this.usersService.updateUserPassword(id, updatePasswordDto.newPassword);
     if (!user)
-      throw new UserNotFoundException();
+      throw new InstanceNotFoundException('user');
     return user;
   }
 
@@ -80,7 +80,7 @@ export class UsersController {
   async deleteUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string): Promise<User> {
     const user: User | null = await this.usersService.deleteUser(id);
     if (!user)
-      throw new UserNotFoundException();
+      throw new InstanceNotFoundException('user');
     return user;
   }
 }

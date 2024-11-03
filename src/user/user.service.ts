@@ -35,7 +35,7 @@ export class UsersService {
 
   async updateUserPassword(userId: string, newPassword: string): Promise<User | null> {
     const user: UserModel | null = await this.prisma.user.update({
-      where: { id: userId,  },
+      where: { id: userId },
       data: { password: newPassword },
     });
     return user ? new User(user) : null;

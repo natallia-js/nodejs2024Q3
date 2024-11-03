@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import { Track as TrackModel } from '@prisma/client';
 export interface Track {
   id: string; // uuid v4
   name: string;

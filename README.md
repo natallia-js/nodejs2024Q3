@@ -12,7 +12,9 @@ git clone {repository URL}
 
 
 npx prisma migrate dev
-npx prisma migrate deploy  
+npx prisma migrate deploy
+
+npx prisma generate
 
 
 
