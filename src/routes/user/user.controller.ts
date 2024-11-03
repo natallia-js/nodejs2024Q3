@@ -12,12 +12,12 @@ import {
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { UsersService } from './user.service';
-import { CreateUserDto, createUserSchema, UpdatePasswordDto, updatePasswordSchema, User, userIdSchema } from '../dto/user';
-import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
-import { InstanceNotFoundException } from '../exceptions/instance-not-found.exception';
-import { WrongCurrentPasswordException } from '../exceptions/wrong-current-password.exception';
 import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
+import { UsersService } from './user.service';
+import { CreateUserDto, createUserSchema, UpdatePasswordDto, updatePasswordSchema, User, userIdSchema } from '../../dto/user';
+import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
+import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
+import { WrongCurrentPasswordException } from '../../exceptions/wrong-current-password.exception';
 import { BadRequestParamsException } from 'src/exceptions/bad-request-params.exception';
 
 @Controller('user')

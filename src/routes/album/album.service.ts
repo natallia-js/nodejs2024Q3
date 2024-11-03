@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../additional-services/prisma.service';
-import { Artist as ArtistModel } from '@prisma/client';
-import { CreateArtistDto, Artist, UpdateArtistDto } from '../dto/artist';
+import { PrismaService } from '../../additional-services/prisma.service';
+import { Album as AlbumModel } from '@prisma/client';
+import { CreateAlbumDto, Album, UpdateAlbumDto } from '../../dto/album';
 
 @Injectable()
-export class ArtistsService {
+export class AlbumsService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllArtists(): Promise<Artist[]> {
-    const artists: ArtistModel[] = await this.prisma.artist.findMany();
-    return artists.map(artist => new Artist(artist));
+  async getAllAlbums(): Promise<Album[]> {
+    const albums: AlbumModel[] = await this.prisma.album.findMany();
+    return albums.map(album => new Album(album));
   }
 
   async getArtist(id: string): Promise<Artist | null> {

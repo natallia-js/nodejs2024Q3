@@ -13,9 +13,9 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { ArtistsService } from './artist.service';
-import { CreateArtistDto, createArtistSchema, UpdateArtistDto, updateArtistSchema, Artist, artistIdSchema } from '../dto/artist';
-import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
-import { InstanceNotFoundException } from '../exceptions/instance-not-found.exception';
+import { CreateArtistDto, createArtistSchema, UpdateArtistDto, updateArtistSchema, Artist, artistIdSchema } from '../../dto/artist';
+import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
+import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
 import { BadRequestParamsException } from 'src/exceptions/bad-request-params.exception';
 
