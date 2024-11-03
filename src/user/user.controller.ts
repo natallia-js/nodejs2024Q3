@@ -1,7 +1,19 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, UseFilters, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  UseFilters,
+  UseInterceptors,
+  UsePipes,
+} from '@nestjs/common';
 import { UsersService } from './user.service';
-import { User } from '@prisma/client';
-import { CreateUserDto, createUserSchema, UpdatePasswordDto, updatePasswordSchema, userIdSchema } from '../dto/user';
+import { CreateUserDto, createUserSchema, UpdatePasswordDto, updatePasswordSchema, User, userIdSchema } from '../dto/user';
 import { HttpExceptionFilter } from '../exceptions/http-exception.filter';
 import { UserNotFoundException } from '../exceptions/user-not-found.exception';
 import { WrongCurrentPasswordException } from '../exceptions/wrong-current-password.exception';
@@ -12,6 +24,7 @@ import { BadRequestParamsException } from 'src/exceptions/bad-request-params.exc
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
   @UseFilters(HttpExceptionFilter)
@@ -19,6 +32,7 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
   @UseFilters(HttpExceptionFilter)
@@ -29,6 +43,7 @@ export class UsersController {
     return user;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createUserSchema))
@@ -39,27 +54,31 @@ export class UsersController {
     return this.usersService.addUser(createUserDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(updatePasswordSchema))
   @UseFilters(HttpExceptionFilter)
   async changeUserPassword(
     @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
-    @Body() updatePasswordDto: UpdatePasswordDto): Promise<User>
+    @Body(new ZodValidationPipe(updatePasswordSchema)) updatePasswordDto: UpdatePasswordDto): Promise<User>
   {
     const existingUserRecord: User | null = await this.usersService.getUser(id);
     if (!existingUserRecord)
       throw new UserNotFoundException();
     if (existingUserRecord.password !== updatePasswordDto.oldPassword)
       throw new WrongCurrentPasswordException();
-    return this.usersService.updateUserPassword(id, updatePasswordDto.newPassword);
+    const user: User | null = await this.usersService.updateUserPassword(id, updatePasswordDto.newPassword);
+    if (!user)
+      throw new UserNotFoundException();
+    return user;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
   @UseFilters(HttpExceptionFilter)
   async deleteUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string): Promise<User> {
-    const user = await this.usersService.deleteUser(id);
+    const user: User | null = await this.usersService.deleteUser(id);
     if (!user)
       throw new UserNotFoundException();
     return user;

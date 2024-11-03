@@ -1,13 +1,26 @@
 import { z } from 'zod';
-
-/*export interface User {
+import { Exclude } from 'class-transformer';
+import { User as UserModel } from '@prisma/client';
+export class User {
   id: string; // uuid v4
   login: string;
+
+  @Exclude()
   password: string;
+
   version: number; // integer number, increments on update
   createdAt: number; // timestamp of creation
   updatedAt: number; // timestamp of last update
-}*/
+
+  constructor(user: UserModel) {
+    if (user.id) this.id = user.id;
+    if (user.login) this.login = user.login;
+    if (user.password) this.password = user.password;
+    if (user.version) this.version = user.version;
+    if (user.createdAt) this.createdAt = user.createdAt.valueOf();
+    if (user.updatedAt) this.updatedAt = user.updatedAt.valueOf();
+  }
+}
 
 export const userIdSchema = z.string().uuid('User id is not valid');
 
