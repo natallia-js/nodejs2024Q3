@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { Exclude } from 'class-transformer';
 import { User as UserModel } from '@prisma/client';
+
 export class User {
   id: string; // uuid v4
   login: string;

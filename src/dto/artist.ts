@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { Artist as ArtistModel } from '@prisma/client';
+
 export class Artist {
   id: string; // uuid v4
   name: string;

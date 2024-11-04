@@ -9,21 +9,22 @@
 
 ```
 git clone {repository URL}
-
-
-npx prisma migrate dev
-npx prisma migrate deploy
-
-npx prisma generate
-
-
-
 ```
 
 ## Installing NPM modules
 
 ```
-npm install
+npm install (admin rights may be needed)
+```
+
+## Installing Prisma Client
+
+```
+npx prisma migrate dev
+or
+npx prisma migrate deploy
+then
+npx prisma generate
 ```
 
 ## Running application

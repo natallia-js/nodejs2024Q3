@@ -12,42 +12,32 @@ export class AlbumsService {
     return albums.map(album => new Album(album));
   }
 
-  async getArtist(id: string): Promise<Artist | null> {
-    const artist: ArtistModel | null = await this.prisma.artist.findUnique({
+  async getAlbum(id: string): Promise<Album | null> {
+    const album: AlbumModel | null = await this.prisma.album.findUnique({
       where: { id: id || '' },
     });
-    return artist ? new Artist(artist) : null;
+    return album ? new Album(album) : null;
   }
 
-  async artistWithNameExists(name: string, notId?: string): Promise<boolean> {
-    if (!notId)
-        return Boolean(await this.prisma.artist.findUnique({
-          where: { name: name || '' },
-        }));
-    return Boolean(await this.prisma.artist.findUnique({
-        where: { NOT: { id: notId }, name: name || '' },
-    }));
-  }
-
-  async addArtist(newArtistData: CreateArtistDto): Promise<Artist> {
-    const artist: ArtistModel = await this.prisma.artist.create({
-      data: newArtistData,
+  async addAlbum(newAlbumData: CreateAlbumDto): Promise<Album> {
+    const album: AlbumModel = await this.prisma.album.create({
+      data: newAlbumData,
     });
-    return new Artist(artist);
+    return new Album(album);
   }
 
-  async updateArtistData(artistId: string, updateArtistDto: UpdateArtistDto): Promise<Artist | null> {
-    const artist: ArtistModel | null = await this.prisma.artist.update({
-      where: { id: artistId },
-      data: updateArtistDto,
+  async updateAlbumData(albumId: string, updateAlbumDto: UpdateAlbumDto): Promise<Album | null> {
+    const album: AlbumModel | null = await this.prisma.album.update({
+      where: { id: albumId },
+      data: updateAlbumDto,
     });
-    return artist ? new Artist(artist) : null;
+    return album ? new Album(album) : null;
   }
 
-  async deleteArtist(id: string): Promise<Artist | null> {
-    const artist = await this.prisma.artist.delete({
+  async deleteAlbum(id: string): Promise<Album | null> {
+    const album = await this.prisma.album.delete({
       where: { id },
     });
-    return artist ? new Artist(artist) : null;
+    return album ? new Album(album) : null;
   }
 }
