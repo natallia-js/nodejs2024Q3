@@ -12,6 +12,13 @@ export class AlbumsService {
     return albums.map(album => new Album(album));
   }
 
+  async getGivenAlbums(ids: string[]): Promise<Album[]> {
+    const albums: AlbumModel[] = await this.prisma.album.findMany({
+      where: { id: { in: ids || [] }},
+    });
+    return albums.map(album => new Album(album));
+  }  
+
   async getAlbum(id: string): Promise<Album | null> {
     const album: AlbumModel | null = await this.prisma.album.findUnique({
       where: { id: id || '' },

@@ -12,6 +12,13 @@ export class TracksService {
     return tracks.map(track => new Track(track));
   }
 
+  async getGivenTracks(ids: string[]): Promise<Track[]> {
+    const tracks: TrackModel[] = await this.prisma.track.findMany({
+      where: { id: { in: ids || [] }},
+    });
+    return tracks.map(track => new Track(track));
+  }  
+
   async getTrack(id: string): Promise<Track | null> {
     const track: TrackModel | null = await this.prisma.track.findUnique({
       where: { id: id || '' },

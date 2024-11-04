@@ -12,6 +12,13 @@ export class ArtistsService {
     return artists.map(artist => new Artist(artist));
   }
 
+  async getGivenArtists(ids: string[]): Promise<Artist[]> {
+    const artists: ArtistModel[] = await this.prisma.artist.findMany({
+      where: { id: { in: ids || [] }},
+    });
+    return artists.map(artist => new Artist(artist));
+  }
+
   async getArtist(id: string): Promise<Artist | null> {
     const artist: ArtistModel | null = await this.prisma.artist.findUnique({
       where: { id: id || '' },
