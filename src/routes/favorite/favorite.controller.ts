@@ -1,36 +1,36 @@
 import {
-    Body,
-    ClassSerializerInterceptor,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    Param,
-    Post,
-    Put,
-    UseFilters,
-    UseInterceptors,
-    UsePipes,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FavoritesService } from './favorite.service';
 import { TracksService } from '../track/track.service';
 import { ArtistsService } from '../artist/artist.service';
 import { AlbumsService } from '../album/album.service';
-//import { CreateTrackDto, createTrackSchema, UpdateTrackDto, updateTrackSchema, Track, trackIdSchema } from '../../dto/track';
+import { albumIdSchema } from '../../dto/album';
+import { artistIdSchema } from '../../dto/artist';
+import { trackIdSchema } from '../../dto/track';
 import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
-import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
+import { InstanceForFavoriteNotFoundException } from '../../exceptions/instance-for-favorite-not-found.exception';
+import { InstanceNotFavoriteException } from '../../exceptions/instance-not-favorite.exception';
 import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
 import { Favorites } from '../../dto/favorites';
 
 @Controller('favs')
 export class FavoritesController {
   constructor(
-      private readonly favoritesService: FavoritesService,
-      private readonly tracksService: TracksService,
-      private readonly albumsService: AlbumsService,
-      private readonly artistsService: ArtistsService
+    private readonly favoritesService: FavoritesService,
+    private readonly tracksService: TracksService,
+    private readonly albumsService: AlbumsService,
+    private readonly artistsService: ArtistsService,
   ) {}
-  
+
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
@@ -38,64 +38,82 @@ export class FavoritesController {
   async getAllFavorites(): Promise<Favorites> {
     return this.favoritesService.getAllFavorites();
   }
-  
-  /*@UseInterceptors(ClassSerializerInterceptor)
-  @Get(':id')
-  @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
-  async getTrack(@Param('id', new ZodValidationPipe(trackIdSchema)) id: string): Promise<Track> {
-    const track: Track | null = await this.tracksService.getTrack(id);
-    if (!track)
-      throw new InstanceNotFoundException('track');
-    return track;
-  }
-  
+
   @UseInterceptors(ClassSerializerInterceptor)
-  @Post()
+  @Post('album')
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createTrackSchema))
   @UseFilters(HttpExceptionFilter)
-  async addTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
-    if (createTrackDto?.artistId)
-      if (!await this.artistsService.getArtist(createTrackDto.artistId))
-        throw new InstanceNotFoundException(`artist with id ${createTrackDto.artistId}`);
-    if (createTrackDto?.albumId)
-      if (!await this.albumsService.getAlbum(createTrackDto.albumId))
-        throw new InstanceNotFoundException(`album with id ${createTrackDto.albumId}`);
-    return this.tracksService.addTrack(createTrackDto);
+  async addAlbum(
+    @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
+  ) {
+    if (!(await this.albumsService.getAlbum(id)))
+      throw new InstanceForFavoriteNotFoundException(`album with id = ${id}`);
+    this.favoritesService.addAlbumToFavorites(id);
+    return 'Album added to favorites';
   }
-  
+
   @UseInterceptors(ClassSerializerInterceptor)
-  @Put(':id')
-  @HttpCode(200)
+  @Post('artist')
+  @HttpCode(201)
   @UseFilters(HttpExceptionFilter)
-  async updateTrackData(
-    @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
-    @Body(new ZodValidationPipe(updateTrackSchema)) updateTrackDto: UpdateTrackDto): Promise<Track>
-  {
-    const existingTrackRecord: Track | null = await this.tracksService.getTrack(id);
-    if (!existingTrackRecord)
-      throw new InstanceNotFoundException('track');
-    if (updateTrackDto?.artistId)
-      if (!await this.artistsService.getArtist(updateTrackDto.artistId))
-        throw new InstanceNotFoundException(`artist with id ${updateTrackDto.artistId}`);
-    if (updateTrackDto?.albumId)
-      if (!await this.albumsService.getAlbum(updateTrackDto.albumId))
-        throw new InstanceNotFoundException(`album with id ${updateTrackDto.albumId}`);
-    const track: Track | null = await this.tracksService.updateTrackData(id, updateTrackDto);
-    if (!track)
-      throw new InstanceNotFoundException('track');
-    return track;
+  async addArtist(
+    @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
+  ) {
+    if (!(await this.artistsService.getArtist(id)))
+      throw new InstanceForFavoriteNotFoundException(`artist with id = ${id}`);
+    this.favoritesService.addArtistToFavorites(id);
+    return 'Artist added to favorites';
   }
-  
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Post('track')
+  @HttpCode(201)
+  @UseFilters(HttpExceptionFilter)
+  async addTrack(
+    @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
+  ) {
+    if (!(await this.tracksService.getTrack(id)))
+      throw new InstanceForFavoriteNotFoundException(`track with id = ${id}`);
+    this.favoritesService.addTrackToFavorites(id);
+    return 'Track added to favorites';
+  }
+
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
   @UseFilters(HttpExceptionFilter)
-  async deleteTrack(@Param('id', new ZodValidationPipe(trackIdSchema)) id: string): Promise<Track> {
-    const track: Track | null = await this.tracksService.deleteTrack(id);
-    if (!track)
-      throw new InstanceNotFoundException('track');
-    return track;
-  }*/
+  async deleteAlbum(
+    @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
+  ) {
+    const deleteResult: boolean =
+      await this.favoritesService.deleteAlbumFromFavorites(id);
+    if (deleteResult) return 'Album deleted from favorites';
+    throw new InstanceNotFavoriteException(`album with id = ${id}`);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Delete(':id')
+  @HttpCode(204)
+  @UseFilters(HttpExceptionFilter)
+  async deleteArtist(
+    @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
+  ) {
+    const deleteResult: boolean =
+      await this.favoritesService.deleteArtistFromFavorites(id);
+    if (deleteResult) return 'Artist deleted from favorites';
+    throw new InstanceNotFavoriteException(`artist with id = ${id}`);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Delete(':id')
+  @HttpCode(204)
+  @UseFilters(HttpExceptionFilter)
+  async deleteTrack(
+    @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
+  ) {
+    const deleteResult: boolean =
+      await this.favoritesService.deleteTrackFromFavorites(id);
+    if (deleteResult) return 'Track deleted from favorites';
+    throw new InstanceNotFavoriteException(`track with id = ${id}`);
+  }
 }

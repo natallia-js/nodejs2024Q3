@@ -26,7 +26,10 @@ export type CreateArtistDto = z.infer<typeof createArtistSchema>;
 
 export const updateArtistSchema = z
   .object({
-    name: z.string().min(1, 'Minimal artist name length is 1 symbol').optional(),
+    name: z
+      .string()
+      .min(1, 'Minimal artist name length is 1 symbol')
+      .optional(),
     grammy: z.boolean().optional(),
   })
   .required();

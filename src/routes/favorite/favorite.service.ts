@@ -8,21 +8,30 @@ export class FavoritesService {
   constructor(private prisma: PrismaService) {}
 
   async getAllFavorites(): Promise<Favorites> {
-    const favorites: FavoritesModel | null = await this.prisma.favorites.findFirst({});
-    if (!favorites)
-        return { artists: [], albums: [], tracks: [] };
+    const favorites: FavoritesModel | null =
+      await this.prisma.favorites.findFirst({});
+    if (!favorites) return { artists: [], albums: [], tracks: [] };
     const favoriteArtistsIds = favorites.artists.split(',');
     const favoriteAlbumsIds = favorites.albums.split(',');
     const favoriteTracksIds = favorites.tracks.split(',');
-    const favoriteArtists = favoriteArtistsIds.length > 0
-      ? await this.prisma.artist.findMany({ where: { id: { in: Array.from(favoriteArtistsIds) } } })
-      : [];
-    const favoriteAlbums = favoriteAlbumsIds.length > 0
-      ? await this.prisma.album.findMany({ where: { id: { in: Array.from(favoriteAlbumsIds) } } })
-      : [];
-    const favoriteTracks = favoriteTracksIds.length > 0
-      ? await this.prisma.track.findMany({ where: { id: { in: Array.from(favoriteTracksIds) } } })
-      : [];
+    const favoriteArtists =
+      favoriteArtistsIds.length > 0
+        ? await this.prisma.artist.findMany({
+            where: { id: { in: Array.from(favoriteArtistsIds) } },
+          })
+        : [];
+    const favoriteAlbums =
+      favoriteAlbumsIds.length > 0
+        ? await this.prisma.album.findMany({
+            where: { id: { in: Array.from(favoriteAlbumsIds) } },
+          })
+        : [];
+    const favoriteTracks =
+      favoriteTracksIds.length > 0
+        ? await this.prisma.track.findMany({
+            where: { id: { in: Array.from(favoriteTracksIds) } },
+          })
+        : [];
     return {
       artists: favoriteArtists,
       albums: favoriteAlbums,
@@ -35,8 +44,8 @@ export class FavoritesService {
     if (favoritesRecord) {
       if (!favoritesRecord.artists.includes(artistId))
         await this.prisma.favorites.update({
-            where: { id: favoritesRecord.id },
-            data: { artists: `${favoritesRecord.artists},${artistId}` },
+          where: { id: favoritesRecord.id },
+          data: { artists: `${favoritesRecord.artists},${artistId}` },
         });
     } else {
       await this.prisma.favorites.create({
@@ -50,8 +59,8 @@ export class FavoritesService {
     if (favoritesRecord) {
       if (!favoritesRecord.albums.includes(albumId))
         await this.prisma.favorites.update({
-            where: { id: favoritesRecord.id },
-            data: { albums: `${favoritesRecord.albums},${albumId}` },
+          where: { id: favoritesRecord.id },
+          data: { albums: `${favoritesRecord.albums},${albumId}` },
         });
     } else {
       await this.prisma.favorites.create({
@@ -65,8 +74,8 @@ export class FavoritesService {
     if (favoritesRecord) {
       if (!favoritesRecord.tracks.includes(trackId))
         await this.prisma.favorites.update({
-            where: { id: favoritesRecord.id },
-            data: { tracks: `${favoritesRecord.tracks},${trackId}` },
+          where: { id: favoritesRecord.id },
+          data: { tracks: `${favoritesRecord.tracks},${trackId}` },
         });
     } else {
       await this.prisma.favorites.create({
@@ -75,6 +84,8 @@ export class FavoritesService {
     }
   }
 
+  // returns true if there is a favorites record with albums string that includes albumId,
+  // and this albumId is successfully deleted from favorites
   async deleteAlbumFromFavorites(albumId: string): Promise<boolean> {
     const favoritesRecord = await this.prisma.favorites.findFirst({});
     if (!favoritesRecord) return false;
@@ -91,6 +102,8 @@ export class FavoritesService {
     return false;
   }
 
+  // returns true if there is a favorites record with artists string that includes artistId,
+  // amd this artistId is successfully deleted from favorites
   async deleteArtistFromFavorites(artistId: string): Promise<boolean> {
     const favoritesRecord = await this.prisma.favorites.findFirst({});
     if (!favoritesRecord) return false;
@@ -107,6 +120,8 @@ export class FavoritesService {
     return false;
   }
 
+  // returns true if there is a favorites record with tracks string that includes trackId,
+  // amd this trackId is successfully deleted from favorites
   async deleteTrackFromFavorites(trackId: string): Promise<boolean> {
     const favoritesRecord = await this.prisma.favorites.findFirst({});
     if (!favoritesRecord) return false;

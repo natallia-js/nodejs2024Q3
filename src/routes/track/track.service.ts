@@ -9,15 +9,15 @@ export class TracksService {
 
   async getAllTracks(): Promise<Track[]> {
     const tracks: TrackModel[] = await this.prisma.track.findMany();
-    return tracks.map(track => new Track(track));
+    return tracks.map((track) => new Track(track));
   }
 
   async getGivenTracks(ids: string[]): Promise<Track[]> {
     const tracks: TrackModel[] = await this.prisma.track.findMany({
-      where: { id: { in: ids || [] }},
+      where: { id: { in: ids || [] } },
     });
-    return tracks.map(track => new Track(track));
-  }  
+    return tracks.map((track) => new Track(track));
+  }
 
   async getTrack(id: string): Promise<Track | null> {
     const track: TrackModel | null = await this.prisma.track.findUnique({
@@ -33,7 +33,10 @@ export class TracksService {
     return new Track(track);
   }
 
-  async updateTrackData(trackId: string, updateTrackDto: UpdateTrackDto): Promise<Track | null> {
+  async updateTrackData(
+    trackId: string,
+    updateTrackDto: UpdateTrackDto,
+  ): Promise<Track | null> {
     const track: TrackModel | null = await this.prisma.track.update({
       where: { id: trackId },
       data: updateTrackDto,

@@ -14,7 +14,7 @@ export class Track {
     if (track.artistId) this.artistId = track.artistId;
     if (track.albumId) this.albumId = track.albumId;
     if (track.duration) this.duration = track.duration;
-  }  
+  }
 }
 
 export const trackIdSchema = z.string().uuid('Track id is not valid');

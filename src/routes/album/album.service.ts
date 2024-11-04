@@ -9,15 +9,15 @@ export class AlbumsService {
 
   async getAllAlbums(): Promise<Album[]> {
     const albums: AlbumModel[] = await this.prisma.album.findMany();
-    return albums.map(album => new Album(album));
+    return albums.map((album) => new Album(album));
   }
 
   async getGivenAlbums(ids: string[]): Promise<Album[]> {
     const albums: AlbumModel[] = await this.prisma.album.findMany({
-      where: { id: { in: ids || [] }},
+      where: { id: { in: ids || [] } },
     });
-    return albums.map(album => new Album(album));
-  }  
+    return albums.map((album) => new Album(album));
+  }
 
   async getAlbum(id: string): Promise<Album | null> {
     const album: AlbumModel | null = await this.prisma.album.findUnique({
@@ -33,7 +33,10 @@ export class AlbumsService {
     return new Album(album);
   }
 
-  async updateAlbumData(albumId: string, updateAlbumDto: UpdateAlbumDto): Promise<Album | null> {
+  async updateAlbumData(
+    albumId: string,
+    updateAlbumDto: UpdateAlbumDto,
+  ): Promise<Album | null> {
     const album: AlbumModel | null = await this.prisma.album.update({
       where: { id: albumId },
       data: updateAlbumDto,
@@ -41,10 +44,11 @@ export class AlbumsService {
     return album ? new Album(album) : null;
   }
 
-  async deleteAlbum(id: string): Promise<Album | null> {
-    const album = await this.prisma.album.delete({
-      where: { id },
-    });
-    return album ? new Album(album) : null;
+  async deleteAlbum(id: string): Promise<boolean> {
+    if (await this.prisma.album.findUnique({ where: { id } })) {
+      await this.prisma.album.delete({ where: { id } });
+      return true;
+    }
+    return false;
   }
 }

@@ -24,7 +24,7 @@ import { PrismaService } from './additional-services/prisma.service';
   providers: [
     AppService,
     PrismaService,
-    
+
     UsersService,
     ArtistsService,
     AlbumsService,

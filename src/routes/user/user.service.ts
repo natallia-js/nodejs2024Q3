@@ -9,7 +9,7 @@ export class UsersService {
 
   async getAllUsers(): Promise<User[]> {
     const users: UserModel[] = await this.prisma.user.findMany();
-    return users.map(user => new User(user));
+    return users.map((user) => new User(user));
   }
 
   async getUser(id: string): Promise<User | null> {
@@ -23,7 +23,7 @@ export class UsersService {
     const user: UserModel | null = await this.prisma.user.findUnique({
       where: { login: login || '' },
     });
-    return Boolean(user); 
+    return Boolean(user);
   }
 
   async addUser(newUserData: CreateUserDto): Promise<User> {
@@ -33,7 +33,10 @@ export class UsersService {
     return new User(user);
   }
 
-  async updateUserPassword(userId: string, newPassword: string): Promise<User | null> {
+  async updateUserPassword(
+    userId: string,
+    newPassword: string,
+  ): Promise<User | null> {
     const user: UserModel | null = await this.prisma.user.update({
       where: { id: userId },
       data: {
@@ -45,10 +48,12 @@ export class UsersService {
     return user ? new User(user) : null;
   }
 
-  async deleteUser(id: string): Promise<User | null> {
-    const user = await this.prisma.user.delete({
-      where: { id },
-    });
-    return user ? new User(user) : null;
+  // returns true if user was found and deleted, false - if user was not found
+  async deleteUser(id: string): Promise<boolean> {
+    if (await this.prisma.user.findUnique({ where: { id } })) {
+      await this.prisma.user.delete({ where: { id } });
+      return true;
+    }
+    return false;
   }
 }

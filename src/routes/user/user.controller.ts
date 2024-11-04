@@ -14,7 +14,14 @@ import {
 } from '@nestjs/common';
 import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
 import { UsersService } from './user.service';
-import { CreateUserDto, createUserSchema, UpdatePasswordDto, updatePasswordSchema, User, userIdSchema } from '../../dto/user';
+import {
+  CreateUserDto,
+  createUserSchema,
+  UpdatePasswordDto,
+  updatePasswordSchema,
+  User,
+  userIdSchema,
+} from '../../dto/user';
 import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import { WrongCurrentPasswordException } from '../../exceptions/wrong-current-password.exception';
@@ -36,10 +43,11 @@ export class UsersController {
   @Get(':id')
   @HttpCode(200)
   @UseFilters(HttpExceptionFilter)
-  async getUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string): Promise<User> {
+  async getUser(
+    @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
+  ): Promise<User> {
     const user: User | null = await this.usersService.getUser(id);
-    if (!user)
-      throw new InstanceNotFoundException('user');
+    if (!user) throw new InstanceNotFoundException(`user with id = ${id}`);
     return user;
   }
 
@@ -50,7 +58,9 @@ export class UsersController {
   @UseFilters(HttpExceptionFilter)
   async addUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     if (await this.usersService.userWithLoginExists(createUserDto.login))
-      throw new BadRequestParamsException('User with this login already exists');
+      throw new BadRequestParamsException(
+        'User with this login already exists',
+      );
     return this.usersService.addUser(createUserDto);
   }
 
@@ -60,16 +70,18 @@ export class UsersController {
   @UseFilters(HttpExceptionFilter)
   async changeUserPassword(
     @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
-    @Body(new ZodValidationPipe(updatePasswordSchema)) updatePasswordDto: UpdatePasswordDto): Promise<User>
-  {
+    @Body(new ZodValidationPipe(updatePasswordSchema))
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<User> {
     const existingUserRecord: User | null = await this.usersService.getUser(id);
-    if (!existingUserRecord)
-      throw new InstanceNotFoundException('user');
+    if (!existingUserRecord) throw new InstanceNotFoundException(`user with id = ${id}`);
     if (existingUserRecord.password !== updatePasswordDto.oldPassword)
       throw new WrongCurrentPasswordException();
-    const user: User | null = await this.usersService.updateUserPassword(id, updatePasswordDto.newPassword);
-    if (!user)
-      throw new InstanceNotFoundException('user');
+    const user: User | null = await this.usersService.updateUserPassword(
+      id,
+      updatePasswordDto.newPassword,
+    );
+    if (!user) throw new InstanceNotFoundException(`user with id = ${id}`);
     return user;
   }
 
@@ -77,10 +89,8 @@ export class UsersController {
   @Delete(':id')
   @HttpCode(204)
   @UseFilters(HttpExceptionFilter)
-  async deleteUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string): Promise<User> {
-    const user: User | null = await this.usersService.deleteUser(id);
-    if (!user)
-      throw new InstanceNotFoundException('user');
-    return user;
+  async deleteUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string) {
+    if (!await this.usersService.deleteUser(id))
+      throw new InstanceNotFoundException(`user with id = ${id}`);
   }
 }
