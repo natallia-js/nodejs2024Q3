@@ -90,7 +90,7 @@ export class TracksController {
   async addTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
     if (!createTrackDto.artistId)
       createTrackDto.artistId = null;
-    if (createTrackDto.albumId)
+    if (!createTrackDto.albumId)
       createTrackDto.albumId = null;
     const { artistId, albumId } = await checkArtistAlbumPair(createTrackDto.artistId, createTrackDto.albumId, this.albumsService, this.artistsService);
     createTrackDto.artistId = artistId;

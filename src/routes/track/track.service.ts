@@ -44,10 +44,11 @@ export class TracksService {
     return track ? new Track(track) : null;
   }
 
-  async deleteTrack(id: string): Promise<Track | null> {
-    const track = await this.prisma.track.delete({
-      where: { id },
-    });
-    return track ? new Track(track) : null;
+  async deleteTrack(id: string): Promise<boolean> {
+    if (await this.prisma.track.findUnique({ where: { id } })) {
+      await this.prisma.track.delete({ where: { id } });
+      return true;
+    }
+    return false;
   }
 }

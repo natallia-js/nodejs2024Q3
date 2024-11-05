@@ -82,7 +82,6 @@ export class FavoritesController {
       await this.favoritesService.deleteAlbumFromFavorites(id);
     if (!deleteResult)
       throw new InstanceNotFavoriteException(`album with id = ${id}`);
-    return 'Album deleted from favorites';      
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -95,7 +94,6 @@ export class FavoritesController {
       await this.favoritesService.deleteArtistFromFavorites(id);
     if (!deleteResult)
       throw new InstanceNotFavoriteException(`artist with id = ${id}`);
-    return 'Artist deleted from favorites';
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -108,6 +106,5 @@ export class FavoritesController {
       await this.favoritesService.deleteTrackFromFavorites(id);
     if (!deleteResult)
       throw new InstanceNotFavoriteException(`track with id = ${id}`);
-    return 'Track deleted from favorites';      
   }
 }

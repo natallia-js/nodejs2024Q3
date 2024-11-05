@@ -55,10 +55,10 @@ export class ArtistsController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createArtistSchema))
   async addArtist(@Body() createArtistDto: CreateArtistDto): Promise<Artist> {
-    if (await this.artistsService.artistWithNameExists(createArtistDto.name))
+    /*if (await this.artistsService.artistWithNameExists(createArtistDto.name))
       throw new BadRequestParamsException(
         'Artist with this name already exists',
-      );
+      );*/
     return this.artistsService.addArtist(createArtistDto);
   }
 
@@ -73,12 +73,12 @@ export class ArtistsController {
     const existingArtistRecord: Artist | null =
       await this.artistsService.getArtist(id);
     if (!existingArtistRecord) throw new InstanceNotFoundException(`artist with id = ${id}`);
-    if (
+    /*if (
       await this.artistsService.artistWithNameExists(updateArtistDto.name, id)
     )
       throw new BadRequestParamsException(
         'Artist with this name already exists',
-      );
+      );*/
     const artist: Artist | null = await this.artistsService.updateArtistData(
       id,
       updateArtistDto,

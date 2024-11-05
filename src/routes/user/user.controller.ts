@@ -52,10 +52,10 @@ export class UsersController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createUserSchema))
   async addUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    if (await this.usersService.userWithLoginExists(createUserDto.login))
+    /*if (await this.usersService.userWithLoginExists(createUserDto.login))
       throw new BadRequestParamsException(
         'User with this login already exists',
-      );
+      );*/
     return this.usersService.addUser(createUserDto);
   }
 
