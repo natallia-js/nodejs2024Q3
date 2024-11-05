@@ -8,13 +8,13 @@ import {
   Param,
   Post,
   Put,
-  UseFilters,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { TracksService } from './track.service';
 import { ArtistsService } from '../artist/artist.service';
 import { AlbumsService } from '../album/album.service';
+import { FavoritesService } from '../favorite/favorite.service';
 import {
   CreateTrackDto,
   createTrackSchema,
@@ -23,9 +23,38 @@ import {
   Track,
   trackIdSchema,
 } from '../../dto/track';
-import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
-import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
+import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
+import ZodValidationPipe from '../../pipes/zod-validation.pipe';
+import { Album } from '../../dto/album';
+import { Artist } from '../../dto/artist';
+
+async function checkArtistAlbumPair(
+  artistId: string | null | undefined,
+  albumId: string | null | undefined,
+  albumsService: AlbumsService,
+  artistsService: ArtistsService
+): Promise<{ artistId: string | null, albumId: string | null }>
+{
+  if (!artistId && !albumId && artistId === null && albumId === null)
+    return { artistId, albumId };
+  if (albumId) {
+    const album: Album | null = await albumsService.getAlbum(albumId);
+    if (!album)
+      throw new InstanceNotFoundException(`album with id = ${albumId}`);
+    if (artistId) {
+      if (album.artistId !== artistId)
+        throw new BadRequestParamsException(`The author of the album with id = ${albumId} is artist with id = ${album.artistId}`);
+    } else
+      return { artistId: album.artistId, albumId };
+  } else {
+    const artist: Artist | null = await artistsService.getArtist(artistId || '');
+    if (!artist)
+      throw new InstanceNotFoundException(`artist with id = ${artistId}`);
+    return { artistId: artistId || null, albumId: null };
+  }
+  return { artistId, albumId };
+}
 
 @Controller('track')
 export class TracksController {
@@ -33,12 +62,12 @@ export class TracksController {
     private readonly tracksService: TracksService,
     private readonly albumsService: AlbumsService,
     private readonly artistsService: ArtistsService,
+    private readonly favoritesService: FavoritesService,
   ) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async getAllTracks(): Promise<Track[]> {
     return this.tracksService.getAllTracks();
   }
@@ -46,12 +75,11 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async getTrack(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
   ): Promise<Track> {
     const track: Track | null = await this.tracksService.getTrack(id);
-    if (!track) throw new InstanceNotFoundException('track');
+    if (!track) throw new InstanceNotFoundException(`track with id = ${id}`);
     return track;
   }
 
@@ -59,25 +87,20 @@ export class TracksController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createTrackSchema))
-  @UseFilters(HttpExceptionFilter)
   async addTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
-    if (createTrackDto?.artistId)
-      if (!(await this.artistsService.getArtist(createTrackDto.artistId)))
-        throw new InstanceNotFoundException(
-          `artist with id = ${createTrackDto.artistId}`,
-        );
-    if (createTrackDto?.albumId)
-      if (!(await this.albumsService.getAlbum(createTrackDto.albumId)))
-        throw new InstanceNotFoundException(
-          `album with id = ${createTrackDto.albumId}`,
-        );
+    if (!createTrackDto.artistId)
+      createTrackDto.artistId = null;
+    if (createTrackDto.albumId)
+      createTrackDto.albumId = null;
+    const { artistId, albumId } = await checkArtistAlbumPair(createTrackDto.artistId, createTrackDto.albumId, this.albumsService, this.artistsService);
+    createTrackDto.artistId = artistId;
+    createTrackDto.albumId = albumId;
     return this.tracksService.addTrack(createTrackDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async updateTrackData(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateTrackSchema))
@@ -86,17 +109,22 @@ export class TracksController {
     const existingTrackRecord: Track | null = await this.tracksService.getTrack(
       id,
     );
-    if (!existingTrackRecord) throw new InstanceNotFoundException('track');
-    if (updateTrackDto?.artistId)
-      if (!(await this.artistsService.getArtist(updateTrackDto.artistId)))
-        throw new InstanceNotFoundException(
-          `artist with id = ${updateTrackDto.artistId}`,
-        );
-    if (updateTrackDto?.albumId)
-      if (!(await this.albumsService.getAlbum(updateTrackDto.albumId)))
-        throw new InstanceNotFoundException(
-          `album with id = ${updateTrackDto.albumId}`,
-        );
+    if (!existingTrackRecord) throw new InstanceNotFoundException(`track with id = ${id}`);
+    let newArtistId: string | null | undefined = undefined;
+    let newAlbumId: string | null | undefined = undefined;
+    if (updateTrackDto.hasOwnProperty('artistId'))
+      newArtistId = updateTrackDto.artistId || null;
+    if (updateTrackDto.hasOwnProperty('albumId'))
+      newAlbumId = updateTrackDto.albumId || null;
+    if (newArtistId !== undefined || newAlbumId !== undefined) {
+      const { artistId, albumId } = await checkArtistAlbumPair(
+        newArtistId === undefined ? existingTrackRecord.artistId : newArtistId,
+        newAlbumId === undefined ? existingTrackRecord.albumId : newAlbumId,
+        this.albumsService,
+        this.artistsService);
+      updateTrackDto.artistId = artistId;
+      updateTrackDto.albumId = albumId;
+    }
     const track: Track | null = await this.tracksService.updateTrackData(
       id,
       updateTrackDto,
@@ -108,12 +136,10 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
-  @UseFilters(HttpExceptionFilter)
-  async deleteTrack(
-    @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
-  ): Promise<Track> {
-    const track: Track | null = await this.tracksService.deleteTrack(id);
-    if (!track) throw new InstanceNotFoundException('track');
-    return track;
+  async deleteTrack(@Param('id', new ZodValidationPipe(trackIdSchema)) id: string) {
+    if (!await this.tracksService.deleteTrack(id))
+      throw new InstanceNotFoundException(`track with id = ${id}`);
+    // delete record from favorites (if it is there)
+    await this.favoritesService.deleteTrackFromFavorites(id);
   }
 }

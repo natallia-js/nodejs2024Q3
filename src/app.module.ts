@@ -9,6 +9,8 @@ import { AlbumsController } from './routes/album/album.controller';
 import { AlbumsService } from './routes/album/album.service';
 import { TracksController } from './routes/track/track.controller';
 import { TracksService } from './routes/track/track.service';
+import { FavoritesController } from './routes/favorite/favorite.controller';
+import { FavoritesService } from './routes/favorite/favorite.service';
 import { PrismaService } from './additional-services/prisma.service';
 
 @Module({
@@ -20,6 +22,7 @@ import { PrismaService } from './additional-services/prisma.service';
     ArtistsController,
     AlbumsController,
     TracksController,
+    FavoritesController,
   ],
   providers: [
     AppService,
@@ -29,6 +32,7 @@ import { PrismaService } from './additional-services/prisma.service';
     ArtistsService,
     AlbumsService,
     TracksService,
+    FavoritesService,
   ],
 })
 export class AppModule {}

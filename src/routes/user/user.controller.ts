@@ -8,11 +8,10 @@ import {
   Param,
   Post,
   Put,
-  UseFilters,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
+import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { UsersService } from './user.service';
 import {
   CreateUserDto,
@@ -22,10 +21,9 @@ import {
   User,
   userIdSchema,
 } from '../../dto/user';
-import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import { WrongCurrentPasswordException } from '../../exceptions/wrong-current-password.exception';
-import { BadRequestParamsException } from 'src/exceptions/bad-request-params.exception';
+import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
 
 @Controller('user')
 export class UsersController {
@@ -34,7 +32,6 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async getAllUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
   }
@@ -42,7 +39,6 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async getUser(
     @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
   ): Promise<User> {
@@ -55,7 +51,6 @@ export class UsersController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createUserSchema))
-  @UseFilters(HttpExceptionFilter)
   async addUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     if (await this.usersService.userWithLoginExists(createUserDto.login))
       throw new BadRequestParamsException(
@@ -67,7 +62,6 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async changeUserPassword(
     @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
     @Body(new ZodValidationPipe(updatePasswordSchema))
@@ -88,7 +82,6 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
-  @UseFilters(HttpExceptionFilter)
   async deleteUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string) {
     if (!await this.usersService.deleteUser(id))
       throw new InstanceNotFoundException(`user with id = ${id}`);

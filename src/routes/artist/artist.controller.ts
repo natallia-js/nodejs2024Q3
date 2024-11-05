@@ -8,11 +8,11 @@ import {
   Param,
   Post,
   Put,
-  UseFilters,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { ArtistsService } from './artist.service';
+import { FavoritesService } from '../favorite/favorite.service';
 import {
   CreateArtistDto,
   createArtistSchema,
@@ -21,19 +21,20 @@ import {
   Artist,
   artistIdSchema,
 } from '../../dto/artist';
-import { HttpExceptionFilter } from '../../exceptions/http-exception.filter';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
-import ZodValidationPipe from 'src/pipes/zod-validation.pipe';
-import { BadRequestParamsException } from 'src/exceptions/bad-request-params.exception';
+import ZodValidationPipe from '../../pipes/zod-validation.pipe';
+import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
 
 @Controller('artist')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistsService) {}
+  constructor(
+    private readonly artistsService: ArtistsService,
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async getAllArtists(): Promise<Artist[]> {
     return this.artistsService.getAllArtists();
   }
@@ -41,7 +42,6 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async getArtist(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
   ): Promise<Artist> {
@@ -54,7 +54,6 @@ export class ArtistsController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createArtistSchema))
-  @UseFilters(HttpExceptionFilter)
   async addArtist(@Body() createArtistDto: CreateArtistDto): Promise<Artist> {
     if (await this.artistsService.artistWithNameExists(createArtistDto.name))
       throw new BadRequestParamsException(
@@ -66,7 +65,6 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @UseFilters(HttpExceptionFilter)
   async updateArtistData(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateArtistSchema))
@@ -92,9 +90,10 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
-  @UseFilters(HttpExceptionFilter)
   async deleteArtist(@Param('id', new ZodValidationPipe(artistIdSchema)) id: string) {
     if (!await this.artistsService.deleteArtist(id))
       throw new InstanceNotFoundException(`artist with id = ${id}`);
+    // delete record from favorites (if it is there)
+    await this.favoritesService.deleteArtistFromFavorites(id);
   }
 }

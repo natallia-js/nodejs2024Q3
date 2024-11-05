@@ -22,8 +22,8 @@ export const trackIdSchema = z.string().uuid('Track id is not valid');
 export const createTrackSchema = z
   .object({
     name: z.string().min(1, 'Minimal track name length is 1 symbol'),
-    artistId: z.string().optional(),
-    albumId: z.string().optional(),
+    artistId: z.string().nullable(),
+    albumId: z.string().nullable(),
     duration: z.number(),
   })
   .required();
@@ -33,10 +33,9 @@ export type CreateTrackDto = z.infer<typeof createTrackSchema>;
 export const updateTrackSchema = z
   .object({
     name: z.string().min(1, 'Minimal track name length is 1 symbol').optional(),
-    artistId: z.string().optional(),
-    albumId: z.string().optional(),
+    artistId: z.string().nullable().optional(),
+    albumId: z.string().nullable().optional(),
     duration: z.number().optional(),
-  })
-  .required();
+  });
 
 export type UpdateTrackDto = z.infer<typeof updateTrackSchema>;

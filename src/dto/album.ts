@@ -21,7 +21,7 @@ export const createAlbumSchema = z
   .object({
     name: z.string().min(1, 'Minimal album name length is 1 symbol'),
     year: z.number(),
-    artistId: z.string().optional(),
+    artistId: z.string().nullable(),
   })
   .required();
 
@@ -31,8 +31,7 @@ export const updateAlbumSchema = z
   .object({
     name: z.string().min(1, 'Minimal album name length is 1 symbol').optional(),
     year: z.number().optional(),
-    artistId: z.string().optional(),
-  })
-  .required();
+    artistId: z.string().nullable().optional(),
+  });
 
 export type UpdateAlbumDto = z.infer<typeof updateAlbumSchema>;

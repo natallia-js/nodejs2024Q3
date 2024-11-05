@@ -4,12 +4,12 @@ import { Artist as ArtistModel } from '@prisma/client';
 export class Artist {
   id: string; // uuid v4
   name: string;
-  grammy: boolean;
+  grammy: boolean = false;
 
   constructor(artist: ArtistModel) {
     if (artist.id) this.id = artist.id;
     if (artist.name) this.name = artist.name;
-    if (artist.grammy) this.grammy = artist.grammy;
+    if (typeof artist.grammy === 'boolean') this.grammy = artist.grammy;
   }
 }
 
@@ -31,7 +31,6 @@ export const updateArtistSchema = z
       .min(1, 'Minimal artist name length is 1 symbol')
       .optional(),
     grammy: z.boolean().optional(),
-  })
-  .required();
+  });
 
 export type UpdateArtistDto = z.infer<typeof updateArtistSchema>;

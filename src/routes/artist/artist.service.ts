@@ -26,7 +26,7 @@ export class ArtistsService {
     return artist ? new Artist(artist) : null;
   }
 
-  async artistWithNameExists(name: string, notId?: string): Promise<boolean> {
+  async artistWithNameExists(name: string | undefined, notId?: string): Promise<boolean> {
     if (!notId)
       return Boolean(
         await this.prisma.artist.findUnique({
