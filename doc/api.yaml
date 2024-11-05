@@ -152,7 +152,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         400:
-          description: Bad request. Body does not contain required fields
+          description: 'Bad request. Body does not contain required field(-s) or field value(-s) is(are) incorrect.
+                       Possible error messages are "Bad request params: \\"[field name]\\": Required",
+                       "Minimal [field name] length is 1 symbol"'
 
   /user/{userId}:
     parameters:
@@ -174,9 +176,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         400:
-          description: Bad request. userId is invalid (not uuid)
+          description: 'Bad request. Parameter userId is invalid (not uuid).
+                       Error message: "Bad request params: User id is not valid"'
         404:
-          description: User not found
+          description: 'User not found. Error message: "Instance not found: user with id = [userId]"'
 
     put:
       tags:
@@ -225,11 +228,12 @@ paths:
                     type: integer
                     example: 1655999999
         400:
-          description: Bad request. userId is invalid (not uuid)
+          description: 'Bad request. Parameter userId is invalid (not uuid).
+                       Error message: "Bad request params: User id is not valid"'
         403:
-          description: oldPassword is wrong
+          description: 'oldPassword parameter is wrong. Error message: "Current password is wrong"'
         404:
-          description: User not found
+          description: 'User not found. Error message: "Instance not found: user with id = [userId]"'
 
     delete:
       tags:
@@ -240,9 +244,10 @@ paths:
         204:
           description: The user has been deleted
         400:
-          description: Bad request. userId is invalid (not uuid)
+          description: 'Bad request. Parameter userId is invalid (not uuid).
+                       Error message: "Bad request params: User id is not valid"'
         404:
-          description: User not found
+          description: 'User not found. Error message: "Instance not found: user with id = [userId]"'
 
   /track:
     get:
@@ -293,7 +298,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Track'
         400:
-          description: Bad request. body does not contain required fields
+          description: 'Bad request. Body does not contain required field(-s) or field value(-s) is(are) incorrect.
+                       Possible error messages are "Bad request params: \\"[field name]\\": Required",
+                       "Minimal [field name] length is 1 symbol"'
 
   /track/{id}:
     parameters:
@@ -316,9 +323,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Track'
         400:
-          description: Bad request. trackId is invalid (not uuid)
+          description: 'Bad request. Parameter trackId is invalid (not uuid).
+                       Error message: "Bad request params: Track id is not valid"'
         404:
-          description: Track was not found
+          description: 'Track not found. Error message: "Instance not found: track with id = [trackId]"'
     put:
       tags:
         - Track
@@ -378,9 +386,10 @@ paths:
                     format: uuid
                     nullable: true
         400:
-          description: Bad request. trackId is invalid (not uuid)
+          description: 'Bad request. Parameter trackId is invalid (not uuid).
+                       Error message: "Bad request params: Track id is not valid"'
         404:
-          description: Track was not found
+          description: 'Track not found. Error message: "Instance not found: track with id = [trackId]"'
     delete:
       tags:
         - Track
@@ -390,9 +399,10 @@ paths:
         204:
           description: Deleted successfully
         400:
-          description: Bad request. trackId is invalid (not uuid)
+          description: 'Bad request. Parameter trackId is invalid (not uuid).
+                       Error message: "Bad request params: Track id is not valid"'
         404:
-          description: Track was not found
+          description: 'Track not found. Error message: "Instance not found: track with id = [trackId]"'
   /album:
     get:
       tags:
@@ -440,7 +450,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Album'
         400:
-          description: Bad request. body does not contain required fields
+          description: 'Bad request. Body does not contain required field(-s) or field value(-s) is(are) incorrect.
+                       Possible error messages are "Bad request params: \\"[field name]\\": Required",
+                       "Minimal [field name] length is 1 symbol"'
   /album/{id}:
     parameters:
       - name: id
@@ -462,9 +474,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Album'
         400:
-          description: Bad request. albumId is invalid (not uuid)
+          description: 'Bad request. Parameter albumId is invalid (not uuid).
+                       Error message: "Bad request params: Album id is not valid"'
         404:
-          description: Album was not found
+          description: 'Album not found. Error message: "Instance not found: album with id = [trackId]"'
     put:
       tags:
         - Album
@@ -497,9 +510,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Album'
         400:
-          description: Bad request. albumId is invalid (not uuid)
+          description: 'Bad request. Parameter albumId is invalid (not uuid).
+                       Error message: "Bad request params: Album id is not valid"'
         404:
-          description: Album was not found.
+          description: 'Album not found. Error message: "Instance not found: album with id = [trackId]"'
     delete:
       tags:
         - Album
@@ -509,9 +523,10 @@ paths:
         204:
           description: Deleted successfully
         400:
-          description: Bad request. albumId is invalid (not uuid)
+          description: 'Bad request. Parameter albumId is invalid (not uuid).
+                       Error message: "Bad request params: Album id is not valid"'
         404:
-          description: Album was not found.
+          description: 'Album not found. Error message: "Instance not found: album with id = [trackId]"'
   /artist:
     get:
       tags:
@@ -554,7 +569,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Artist'
         400:
-          description: Bad request. body does not contain required fields
+          description: 'Bad request. Body does not contain required field(-s) or field value(-s) is(are) incorrect.
+                       Possible error messages are "Bad request params: \\"[field name]\\": Required",
+                       "Minimal [field name] length is 1 symbol"'
   /artist/{id}:
     parameters:
       - name: id
@@ -576,9 +593,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Artist'
         400:
-          description: Bad request. artistId is invalid (not uuid)
+          description: 'Bad request. Parameter artistId is invalid (not uuid).
+                       Error message: "Bad request params: Artist id is not valid"'
         404:
-          description: Artist was not found.
+          description: 'Artist not found. Error message: "Instance not found: artist with id = [trackId]"'
     put:
       tags:
         - Artist
@@ -606,9 +624,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Artist'
         400:
-          description: Bad request. artistId is invalid (not uuid)
+          description: 'Bad request. Parameter artistId is invalid (not uuid).
+                       Error message: "Bad request params: Artist id is not valid"'
         404:
-          description: Artist was not found
+          description: 'Artist not found. Error message: "Instance not found: artist with id = [trackId]"'
     delete:
       tags:
         - Artist
@@ -618,9 +637,10 @@ paths:
         204:
           description: Deleted successfully
         400:
-          description: Bad request. artistId is invalid (not uuid)
+          description: 'Bad request. Parameter artistId is invalid (not uuid).
+                       Error message: "Bad request params: Artist id is not valid"'
         404:
-          description: Artist was not found.
+          description: 'Artist not found. Error message: "Instance not found: artist with id = [trackId]"'
   /favs:
     get:
       tags:
@@ -649,9 +669,10 @@ paths:
       description: Add track to the favorites
       responses:
         201:
-          description: Added successfully
+          description: Track was successfully added to favorites
         400:
-          description: Bad. trackId is invalid (not uuid)
+          description: 'Bad request. Parameter trackId is invalid (not uuid).
+                       Error message: "Bad request params: Track id is not valid"'
         422:
           description: Track with id doesn't exist
     delete:
@@ -661,11 +682,12 @@ paths:
       description: Delete track from favorites
       responses:
         204:
-          description: Deleted successfully
+          description: Track was successfully deleted from favorites
         400:
-          description: Bad. trackId is invalid (not uuid)
+          description: 'Bad request. Parameter trackId is invalid (not uuid).
+                       Error message: "Bad request params: Track id is not valid"'
         404:
-          description: Track was not found.
+          description: 'Track not found. Error message: "Instance not found: track with id = [trackId]"'
   /favs/album/{id}:
     parameters:
       - name: id
@@ -681,9 +703,10 @@ paths:
       description: Add album to the favorites
       responses:
         201:
-          description: Added successfully
+          description: Album was successfully added to favorites
         400:
-          description: Bad. albumId is invalid (not uuid)
+          description: 'Bad request. Parameter albumId is invalid (not uuid).
+                       Error message: "Bad request params: Album id is not valid"'
         422:
           description: Album with id doesn't exist.
     delete:
@@ -693,11 +716,12 @@ paths:
       description: Delete album from favorites
       responses:
         204:
-          description: Deleted successfully
+          description: Album was successfully deleted from favorites
         400:
-          description: Bad. albumId is invalid (not uuid)
+          description: 'Bad request. Parameter albumId is invalid (not uuid).
+                       Error message: "Bad request params: Album id is not valid"'
         404:
-          description: Album was not found
+          description: 'Album not found. Error message: "Instance not found: album with id = [trackId]"'
   /favs/artist/{id}:
     parameters:
       - name: id
@@ -713,9 +737,10 @@ paths:
       description: Add artist to the favorites
       responses:
         201:
-          description: Added successfully
+          description: Artist was successfully added to favorites
         400:
-          description: Bad request. artistId is invalid (not uuid)
+          description: 'Bad request. Parameter artistId is invalid (not uuid).
+                       Error message: "Bad request params: Artist id is not valid"'
         422:
           description: Artist with id doesn't exist
     delete:
@@ -725,8 +750,9 @@ paths:
       description: Delete artist from favorites
       responses:
         204:
-          description: Deleted successfully
+          description: Artist was successfully deleted from favorites
         400:
-          description: Bad request. artistId is invalid (not uuid)
+          description: 'Bad request. Parameter artistId is invalid (not uuid).
+                       Error message: "Bad request params: Artist id is not valid"'
         404:
-          description: Artist was not found
+          description: 'Artist not found. Error message: "Instance not found: artist with id = [trackId]"'
