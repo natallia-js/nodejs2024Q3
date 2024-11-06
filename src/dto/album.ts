@@ -3,13 +3,28 @@ import { Album as AlbumModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Album {
-  @ApiProperty({ description: 'Album identifier', nullable: false, format: 'uuid', required: true })
+  @ApiProperty({
+    description: 'Album identifier',
+    nullable: false,
+    format: 'uuid',
+    required: true,
+  })
   id: string; // uuid v4
 
-  @ApiProperty({ description: 'Album name', nullable: false, example: 'Innuendo', required: true })
+  @ApiProperty({
+    description: 'Album name',
+    nullable: false,
+    example: 'Innuendo',
+    required: true,
+  })
   name: string;
 
-  @ApiProperty({ description: 'Album year', nullable: false, example: 1991, required: true })
+  @ApiProperty({
+    description: 'Album year',
+    nullable: false,
+    example: 1991,
+    required: true,
+  })
   year: number;
 
   @ApiProperty({
@@ -39,7 +54,18 @@ export const createAlbumSchema = z
   })
   .required();
 
-export type CreateAlbumDto = z.infer<typeof createAlbumSchema>;
+//export type CreateAlbumDto = z.infer<typeof createAlbumSchema>;
+
+export class CreateAlbumDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  year: number;
+
+  @ApiProperty()
+  artistId: string | null;
+}
 
 export const updateAlbumSchema = z.object({
   name: z.string().min(1, 'Minimal album name length is 1 symbol').optional(),
@@ -47,4 +73,15 @@ export const updateAlbumSchema = z.object({
   artistId: z.string().nullable().optional(),
 });
 
-export type UpdateAlbumDto = z.infer<typeof updateAlbumSchema>;
+//export type UpdateAlbumDto = z.infer<typeof updateAlbumSchema>;
+
+export class UpdateAlbumDto {
+  @ApiProperty()
+  name?: string;
+
+  @ApiProperty()
+  year?: number;
+
+  @ApiProperty()
+  artistId?: string | null;
+}

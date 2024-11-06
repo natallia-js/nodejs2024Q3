@@ -26,6 +26,10 @@ import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { ApiTags } from '@nestjs/swagger';
 //import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
 import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
+import { ApiGetCertainItemResponse } from '../../decorators/ApiGetCertainItemResponse';
+import { ApiCreateNewInstanceResponse } from '../../decorators/ApiCreateNewInstanceResponse';
+import { ApiModifyInstanceResponse } from '../../decorators/ApiModifyInstanceResponse';
+import { ApiDelInstanceResponse } from '../../decorators/ApiDelInstanceResponse';
 
 @ApiTags('artist')
 @Controller('artist')
@@ -46,6 +50,7 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
+  @ApiGetCertainItemResponse(Artist, ['Artist'], 'artist')
   async getArtist(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
   ): Promise<Artist> {
@@ -58,6 +63,7 @@ export class ArtistsController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createArtistSchema))
+  @ApiCreateNewInstanceResponse(Artist, ['Artist'], 'artist')
   async addArtist(@Body() createArtistDto: CreateArtistDto): Promise<Artist> {
     /*if (await this.artistsService.artistWithNameExists(createArtistDto.name))
       throw new BadRequestParamsException(
@@ -69,6 +75,8 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
+  @ApiModifyInstanceResponse('Update artist information', 'Update artist information by UUID',
+    'The artist has been updated', Artist, ['Artist'], 'artist')
   async updateArtistData(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateArtistSchema))
@@ -95,6 +103,7 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
+  @ApiDelInstanceResponse(Artist, ['Artist'], 'artist')
   async deleteArtist(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
   ) {

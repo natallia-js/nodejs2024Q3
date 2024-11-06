@@ -69,7 +69,15 @@ export const createUserSchema = z
   })
   .required();
 
-export type CreateUserDto = z.infer<typeof createUserSchema>;
+//export type CreateUserDto = z.infer<typeof createUserSchema>;
+
+export class CreateUserDto {
+  @ApiProperty()
+  login: string;
+
+  @ApiProperty()
+  password: string;
+}
 
 export const updatePasswordSchema = z
   .object({
@@ -78,4 +86,12 @@ export const updatePasswordSchema = z
   })
   .required();
 
-export type UpdatePasswordDto = z.infer<typeof updatePasswordSchema>;
+//export type UpdatePasswordDto = z.infer<typeof updatePasswordSchema>;
+
+export class UpdatePasswordDto {
+  @ApiProperty()
+  oldPassword: string;
+
+  @ApiProperty()
+  newPassword: string;
+}

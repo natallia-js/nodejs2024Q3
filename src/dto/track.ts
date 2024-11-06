@@ -3,10 +3,20 @@ import { Track as TrackModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Track {
-  @ApiProperty({ description: 'Track identifier', nullable: false, format: 'uuid', required: true })
+  @ApiProperty({
+    description: 'Track identifier',
+    nullable: false,
+    format: 'uuid',
+    required: true,
+  })
   id: string; // uuid v4
 
-  @ApiProperty({ description: 'Track name', nullable: false, example: 'The Show Must Go On', required: true })
+  @ApiProperty({
+    description: 'Track name',
+    nullable: false,
+    example: 'The Show Must Go On',
+    required: true,
+  })
   name: string;
 
   @ApiProperty({
@@ -55,7 +65,21 @@ export const createTrackSchema = z
   })
   .required();
 
-export type CreateTrackDto = z.infer<typeof createTrackSchema>;
+//export type CreateTrackDto = z.infer<typeof createTrackSchema>;
+
+export class CreateTrackDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  artistId: string | null;
+  
+  @ApiProperty()
+  albumId: string | null;
+
+  @ApiProperty()
+  duration: number;
+}
 
 export const updateTrackSchema = z.object({
   name: z.string().min(1, 'Minimal track name length is 1 symbol').optional(),
@@ -64,4 +88,18 @@ export const updateTrackSchema = z.object({
   duration: z.number().optional(),
 });
 
-export type UpdateTrackDto = z.infer<typeof updateTrackSchema>;
+//export type UpdateTrackDto = z.infer<typeof updateTrackSchema>;
+
+export class UpdateTrackDto {
+  @ApiProperty()
+  name?: string;
+
+  @ApiProperty()
+  artistId?: string | null;
+
+  @ApiProperty()
+  albumId?: string | null;
+
+  @ApiProperty()
+  duration?: number;
+}

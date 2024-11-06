@@ -16,7 +16,7 @@ export class Error {
   })
   timestamp: string;
 
-  @ApiProperty({ description: 'Request url', example: '/api', required: true, })
+  @ApiProperty({ description: 'Request url', example: '/api', required: true })
   path: string;
 
   @ApiProperty({
@@ -26,6 +26,10 @@ export class Error {
   })
   message: string;
 
-  @ApiProperty({ description: 'Additional error information', default: '', required: true, })
+  @ApiProperty({
+    description: 'Additional error information',
+    default: '',
+    required: true,
+  })
   additionalErrorInfo: string;
 }

@@ -3,10 +3,20 @@ import { Artist as ArtistModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class Artist {
-  @ApiProperty({ description: 'Artist identifier', nullable: false, format: 'uuid', required: true })
+  @ApiProperty({
+    description: 'Artist identifier',
+    nullable: false,
+    format: 'uuid',
+    required: true,
+  })
   id: string; // uuid v4
 
-  @ApiProperty({ description: 'Artist name', nullable: false, example: 'Freddie Mercury', required: true })
+  @ApiProperty({
+    description: 'Artist name',
+    nullable: false,
+    example: 'Freddie Mercury',
+    required: true,
+  })
   name: string;
 
   @ApiProperty({
@@ -33,11 +43,27 @@ export const createArtistSchema = z
   })
   .required();
 
-export type CreateArtistDto = z.infer<typeof createArtistSchema>;
+//export type CreateArtistDto = z.infer<typeof createArtistSchema>;
+
+export class CreateArtistDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  grammy: boolean;
+}
 
 export const updateArtistSchema = z.object({
   name: z.string().min(1, 'Minimal artist name length is 1 symbol').optional(),
   grammy: z.boolean().optional(),
 });
 
-export type UpdateArtistDto = z.infer<typeof updateArtistSchema>;
+//export type UpdateArtistDto = z.infer<typeof updateArtistSchema>;
+
+export class UpdateArtistDto {
+  @ApiProperty()
+  name?: string;
+
+  @ApiProperty()
+  grammy?: boolean;
+}

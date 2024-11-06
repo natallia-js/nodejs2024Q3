@@ -29,9 +29,12 @@ import { BadRequestParamsException } from '../../exceptions/bad-request-params.e
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { Album } from '../../dto/album';
 import { Artist } from '../../dto/artist';
-import { ApiTags, ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
-import { Error as ErrorType } from '../../dto/error';
+import { ApiTags } from '@nestjs/swagger';
 import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
+import { ApiGetCertainItemResponse } from '../../decorators/ApiGetCertainItemResponse';
+import { ApiCreateNewInstanceResponse } from '../../decorators/ApiCreateNewInstanceResponse';
+import { ApiModifyInstanceResponse } from '../../decorators/ApiModifyInstanceResponse';
+import { ApiDelInstanceResponse } from '../../decorators/ApiDelInstanceResponse';
 
 async function checkArtistAlbumPair(
   artistId: string | null | undefined,
@@ -83,16 +86,7 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
-  @ApiOperation({
-    summary: 'Get single track by id',
-    description: 'Gets single track by id',
-    tags: ['Track'],
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successful operation',
-    type: Track,
-  })
+  @ApiGetCertainItemResponse(Track, ['Track'], 'track')
   async getTrack(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
   ): Promise<Track> {
@@ -105,6 +99,7 @@ export class TracksController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createTrackSchema))
+  @ApiCreateNewInstanceResponse(Track, ['Track'], 'track')
   async addTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
     if (!createTrackDto.artistId) createTrackDto.artistId = null;
     if (!createTrackDto.albumId) createTrackDto.albumId = null;
@@ -122,6 +117,8 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
+  @ApiModifyInstanceResponse('Update track information', 'Update library track information by UUID',
+    'The track has been updated', Track, ['Track'], 'track')
   async updateTrackData(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateTrackSchema))
@@ -159,6 +156,7 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
+  @ApiDelInstanceResponse(Track, ['Track'], 'track')
   async deleteTrack(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
   ) {

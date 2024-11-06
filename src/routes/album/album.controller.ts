@@ -26,6 +26,10 @@ import { InstanceNotFoundException } from '../../exceptions/instance-not-found.e
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
+import { ApiGetCertainItemResponse } from '../../decorators/ApiGetCertainItemResponse';
+import { ApiCreateNewInstanceResponse } from '../../decorators/ApiCreateNewInstanceResponse';
+import { ApiModifyInstanceResponse } from '../../decorators/ApiModifyInstanceResponse';
+import { ApiDelInstanceResponse } from '../../decorators/ApiDelInstanceResponse';
 
 @ApiTags('album')
 @Controller('album')
@@ -47,6 +51,7 @@ export class AlbumsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
+  @ApiGetCertainItemResponse(Album, ['Album'], 'album')
   async getAlbum(
     @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
   ): Promise<Album> {
@@ -59,6 +64,7 @@ export class AlbumsController {
   @Post()
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAlbumSchema))
+  @ApiCreateNewInstanceResponse(Album, ['Album'], 'album')
   async addAlbum(@Body() createAlbumDto: CreateAlbumDto): Promise<Album> {
     if (createAlbumDto?.artistId) {
       if (!(await this.artistsService.getArtist(createAlbumDto.artistId)))
@@ -72,6 +78,8 @@ export class AlbumsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
+  @ApiModifyInstanceResponse('Update album information', 'Update library album information by UUID',
+    'The album has been updated', Album, ['Album'], 'album')
   async updateAlbumData(
     @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateAlbumSchema))
@@ -99,6 +107,7 @@ export class AlbumsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
+  @ApiDelInstanceResponse(Album, ['Album'], 'album')
   async deleteAlbum(
     @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
   ) {

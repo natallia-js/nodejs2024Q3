@@ -1,10 +1,11 @@
 import { Album, Artist, Track } from '@prisma/client';
-import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Artist as ArtistSchema } from './artist';
 import { Album as AlbumSchema } from './album';
 import { Track as TrackSchema } from './track';
 
 export class Favorites {
+  @ApiExtraModels(ArtistSchema)
   @ApiProperty({
     description: 'An array of Artist objects',
     nullable: false,
@@ -14,6 +15,7 @@ export class Favorites {
   })
   artists: Artist[] = [];
 
+  @ApiExtraModels(AlbumSchema)
   @ApiProperty({
     description: 'An array of Album objects',
     nullable: false,
@@ -23,6 +25,7 @@ export class Favorites {
   })
   albums: Album[] = [];
 
+  @ApiExtraModels(TrackSchema)
   @ApiProperty({
     description: 'An array of Track objects',
     nullable: false,
