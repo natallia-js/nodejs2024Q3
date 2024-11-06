@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /prisma/*.db
+/prisma/memory
 .env
 
 # Logs

@@ -36,7 +36,7 @@ export class ArtistsController {
   @Get()
   @HttpCode(200)
   async getAllArtists(): Promise<Artist[]> {
-    return this.artistsService.getAllArtists();
+    return await this.artistsService.getAllArtists();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -59,7 +59,7 @@ export class ArtistsController {
       throw new BadRequestParamsException(
         'Artist with this name already exists',
       );*/
-    return this.artistsService.addArtist(createArtistDto);
+    return await this.artistsService.addArtist(createArtistDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

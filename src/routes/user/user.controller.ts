@@ -33,7 +33,7 @@ export class UsersController {
   @Get()
   @HttpCode(200)
   async getAllUsers(): Promise<User[]> {
-    return this.usersService.getAllUsers();
+    return await this.usersService.getAllUsers();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -56,7 +56,7 @@ export class UsersController {
       throw new BadRequestParamsException(
         'User with this login already exists',
       );*/
-    return this.usersService.addUser(createUserDto);
+    return await this.usersService.addUser(createUserDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

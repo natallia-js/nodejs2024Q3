@@ -16,9 +16,12 @@ git clone {repository URL}
 ```
 1. npm install (admin rights may be needed)
 2. Create .env file (based on .env.example): ./.env
-3. Create db file: ./prisma/database.db (this project uses an IM-MEMORY database SQLite)
-4. Apply pending migrations: npx prisma migrate deploy
-5. Generate Prisma Client: npx prisma generate
+3. Apply pending migrations: npx prisma migrate deploy
+4. Generate Prisma Client: npx prisma generate
+
+P.S. In the created .env file there is a DATABASE_URL=file:memory string (see https://www.sqlite.org/inmemorydb.html).
+     The DATABASE_URL parameter value is used by SQLite.
+     According to the task, the database should be stored IN MEMORY.
 ```
 
 ## Running application
@@ -26,10 +29,6 @@ git clone {repository URL}
 ```
 npm run start
 ```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Testing
 

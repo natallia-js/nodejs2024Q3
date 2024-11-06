@@ -37,7 +37,7 @@ export class AlbumsController {
   @Get()
   @HttpCode(200)
   async getAllAlbums(): Promise<Album[]> {
-    return this.albumsService.getAllAlbums();
+    return await this.albumsService.getAllAlbums();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -62,7 +62,7 @@ export class AlbumsController {
           `artist with id = ${createAlbumDto.artistId}`,
         );
     } else createAlbumDto.artistId = null;
-    return this.albumsService.addAlbum(createAlbumDto);
+    return await this.albumsService.addAlbum(createAlbumDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

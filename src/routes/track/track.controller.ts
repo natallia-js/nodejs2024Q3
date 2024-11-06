@@ -71,7 +71,7 @@ export class TracksController {
   @Get()
   @HttpCode(200)
   async getAllTracks(): Promise<Track[]> {
-    return this.tracksService.getAllTracks();
+    return await this.tracksService.getAllTracks();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -100,7 +100,7 @@ export class TracksController {
     );
     createTrackDto.artistId = artistId;
     createTrackDto.albumId = albumId;
-    return this.tracksService.addTrack(createTrackDto);
+    return await this.tracksService.addTrack(createTrackDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

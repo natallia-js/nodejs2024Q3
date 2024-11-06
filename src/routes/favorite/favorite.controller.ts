@@ -33,7 +33,7 @@ export class FavoritesController {
   @Get()
   @HttpCode(200)
   async getAllFavorites(): Promise<Favorites> {
-    return this.favoritesService.getAllFavorites();
+    return await this.favoritesService.getAllFavorites();
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -44,7 +44,7 @@ export class FavoritesController {
   ) {
     if (!(await this.albumsService.getAlbum(id)))
       throw new InstanceForFavoriteNotFoundException(`album with id = ${id}`);
-    this.favoritesService.addAlbumToFavorites(id);
+    await this.favoritesService.addAlbumToFavorites(id);
     return 'Album added to favorites';
   }
 
@@ -56,7 +56,7 @@ export class FavoritesController {
   ) {
     if (!(await this.artistsService.getArtist(id)))
       throw new InstanceForFavoriteNotFoundException(`artist with id = ${id}`);
-    this.favoritesService.addArtistToFavorites(id);
+    await this.favoritesService.addArtistToFavorites(id);
     return 'Artist added to favorites';
   }
 
@@ -68,7 +68,7 @@ export class FavoritesController {
   ) {
     if (!(await this.tracksService.getTrack(id)))
       throw new InstanceForFavoriteNotFoundException(`track with id = ${id}`);
-    this.favoritesService.addTrackToFavorites(id);
+    await this.favoritesService.addTrackToFavorites(id);
     return 'Track added to favorites';
   }
 
