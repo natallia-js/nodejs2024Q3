@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Error } from '../dto/error';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -27,12 +28,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const errorMessage =
       typeof message !== 'string' ? (message as any).error : '';
 
-    response.status(status).json({
+    const errorObject = {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
       message: messageString,
       additionalErrorInfo: errorMessage,
-    });
+    } as Error;
+    response.status(status).json(errorObject);
   }
 }

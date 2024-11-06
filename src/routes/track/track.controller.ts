@@ -10,6 +10,7 @@ import {
   Put,
   UseInterceptors,
   UsePipes,
+  HttpStatus,
 } from '@nestjs/common';
 import { TracksService } from './track.service';
 import { ArtistsService } from '../artist/artist.service';
@@ -28,6 +29,9 @@ import { BadRequestParamsException } from '../../exceptions/bad-request-params.e
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { Album } from '../../dto/album';
 import { Artist } from '../../dto/artist';
+import { ApiTags, ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+import { Error as ErrorType } from '../../dto/error';
+import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
 
 async function checkArtistAlbumPair(
   artistId: string | null | undefined,
@@ -58,6 +62,7 @@ async function checkArtistAlbumPair(
   return { artistId, albumId };
 }
 
+@ApiTags('track')
 @Controller('track')
 export class TracksController {
   constructor(
@@ -70,6 +75,7 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
+  @ApiGetAllDataResponse(Track, ['Track'], 'tracks')
   async getAllTracks(): Promise<Track[]> {
     return await this.tracksService.getAllTracks();
   }
@@ -77,6 +83,16 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get single track by id',
+    description: 'Gets single track by id',
+    tags: ['Track'],
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successful operation',
+    type: Track,
+  })
   async getTrack(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
   ): Promise<Track> {

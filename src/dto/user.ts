@@ -1,17 +1,54 @@
 import { z } from 'zod';
 import { Exclude } from 'class-transformer';
 import { User as UserModel } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class User {
+  @ApiProperty({
+    description: 'User identifier',
+    nullable: false,
+    format: 'uuid',
+    required: true,
+  })
   id: string; // uuid v4
+
+  @ApiProperty({
+    description: 'User login',
+    nullable: false,
+    example: 'TestUser',
+    required: true,
+  })
   login: string;
 
   @Exclude()
   password: string;
 
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
+  @ApiProperty({
+    description: 'Update version (increments on each update)',
+    nullable: false,
+    example: 1,
+    required: false,
+  })
+  version: number;
+
+  @ApiProperty({
+    description: 'Timestamp of user record creation',
+    nullable: false,
+    default: 'timestamp of record creation',
+    example: 1655000000,
+    required: false,
+  })
+  createdAt: number;
+
+  @ApiProperty({
+    description:
+      'Timestamp of user record last modification (only password can be modified)',
+    nullable: false,
+    default: 'timestamp of record creation',
+    example: 1655000000,
+    required: false,
+  })
+  updatedAt: number;
 
   constructor(user: UserModel) {
     if (user.id) this.id = user.id;

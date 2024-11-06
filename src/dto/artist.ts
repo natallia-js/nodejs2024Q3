@@ -1,9 +1,20 @@
 import { z } from 'zod';
 import { Artist as ArtistModel } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Artist {
+  @ApiProperty({ description: 'Artist identifier', nullable: false, format: 'uuid', required: true })
   id: string; // uuid v4
+
+  @ApiProperty({ description: 'Artist name', nullable: false, example: 'Freddie Mercury', required: true })
   name: string;
+
+  @ApiProperty({
+    description: 'Has (true) or not (false) the artist grammy',
+    nullable: false,
+    example: false,
+    required: false,
+  })
   grammy = false;
 
   constructor(artist: ArtistModel) {

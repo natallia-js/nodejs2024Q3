@@ -24,7 +24,10 @@ import {
 } from '../../dto/album';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
 
+@ApiTags('album')
 @Controller('album')
 export class AlbumsController {
   constructor(
@@ -36,6 +39,7 @@ export class AlbumsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
+  @ApiGetAllDataResponse(Album, ['Album'], 'albums')
   async getAllAlbums(): Promise<Album[]> {
     return await this.albumsService.getAllAlbums();
   }

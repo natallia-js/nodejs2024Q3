@@ -1,10 +1,24 @@
 import { z } from 'zod';
 import { Album as AlbumModel } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Album {
+  @ApiProperty({ description: 'Album identifier', nullable: false, format: 'uuid', required: true })
   id: string; // uuid v4
+
+  @ApiProperty({ description: 'Album name', nullable: false, example: 'Innuendo', required: true })
   name: string;
+
+  @ApiProperty({ description: 'Album year', nullable: false, example: 1991, required: true })
   year: number;
+
+  @ApiProperty({
+    description: 'Id of the artist the album belongs to',
+    nullable: true,
+    default: null,
+    format: 'uuid',
+    required: false,
+  })
   artistId: string | null = null; // refers to Artist
 
   constructor(album: AlbumModel) {

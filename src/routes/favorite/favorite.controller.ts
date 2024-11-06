@@ -19,7 +19,10 @@ import { InstanceForFavoriteNotFoundException } from '../../exceptions/instance-
 import { InstanceNotFavoriteException } from '../../exceptions/instance-not-favorite.exception';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { Favorites } from '../../dto/favorites';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
 
+@ApiTags('favs')
 @Controller('favs')
 export class FavoritesController {
   constructor(
@@ -32,6 +35,7 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
+  @ApiGetAllDataResponse(Favorites, ['Favorites'], 'favorites')
   async getAllFavorites(): Promise<Favorites> {
     return await this.favoritesService.getAllFavorites();
   }

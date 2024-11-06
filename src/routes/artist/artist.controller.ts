@@ -23,8 +23,11 @@ import {
 } from '../../dto/artist';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
+import { ApiTags } from '@nestjs/swagger';
 //import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
+import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
 
+@ApiTags('artist')
 @Controller('artist')
 export class ArtistsController {
   constructor(
@@ -35,6 +38,7 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
+  @ApiGetAllDataResponse(Artist, ['Artist'], 'artists')
   async getAllArtists(): Promise<Artist[]> {
     return await this.artistsService.getAllArtists();
   }

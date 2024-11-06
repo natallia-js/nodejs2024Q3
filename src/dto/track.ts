@@ -1,11 +1,38 @@
 import { z } from 'zod';
 import { Track as TrackModel } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Track {
+  @ApiProperty({ description: 'Track identifier', nullable: false, format: 'uuid', required: true })
   id: string; // uuid v4
+
+  @ApiProperty({ description: 'Track name', nullable: false, example: 'The Show Must Go On', required: true })
   name: string;
+
+  @ApiProperty({
+    description: 'Id of the artist the track belongs to',
+    nullable: true,
+    default: null,
+    format: 'uuid',
+    required: false,
+  })
   artistId: string | null = null; // refers to Artist
+
+  @ApiProperty({
+    description: 'Id of the album the track belongs to',
+    nullable: true,
+    default: null,
+    format: 'uuid',
+    required: false,
+  })
   albumId: string | null = null; // refers to Album
+
+  @ApiProperty({
+    description: 'Duration of the track in seconds',
+    nullable: false,
+    example: 262,
+    required: true,
+  })
   duration: number; // integer number
 
   constructor(track: TrackModel) {

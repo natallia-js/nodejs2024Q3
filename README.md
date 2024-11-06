@@ -30,6 +30,10 @@ P.S. In the created .env file there is a DATABASE_URL=file:memory string (see ht
 npm run start
 ```
 
+After starting the app on port (4000 as default) you can open in your browser OpenAPI documentation by typing http://localhost:4000/doc/. For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+http://localhost:4000/doc-json
+
 ## Testing
 
 After application running open new terminal and enter:
