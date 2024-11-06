@@ -40,7 +40,9 @@ To run all tests without authorization
 ```
 npm run test
 ```
-![test results](images_for_readme/no-auth-test-results.png)
+![test results](images_for_readme/no-auth-test-results1.png)
+
+![test results](images_for_readme/no-auth-test-results2.png)
 
 To run only one of all test suites
 
