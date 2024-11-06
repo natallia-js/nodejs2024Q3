@@ -11,26 +11,20 @@
 git clone {repository URL}
 ```
 
-## Installing NPM modules
+## Getting started
 
 ```
-npm install (admin rights may be needed)
-```
-
-## Installing Prisma Client
-
-```
-npx prisma migrate dev
-or
-npx prisma migrate deploy
-then
-npx prisma generate
+1. npm install (admin rights may be needed)
+2. Create .env file (based on .env.example): ./.env
+3. Create db file: ./prisma/database.db (this project uses an IM-MEMORY database SQLite)
+4. Apply pending migrations: npx prisma migrate deploy
+5. Generate Prisma Client: npx prisma generate
 ```
 
 ## Running application
 
 ```
-npm start
+npm run start
 ```
 
 After starting the app on port (4000 as default) you can open
@@ -46,23 +40,12 @@ To run all tests without authorization
 ```
 npm run test
 ```
+![test results](images_for_readme/no-auth-test-results.png)
 
 To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
 ```
 
 ### Auto-fix and format

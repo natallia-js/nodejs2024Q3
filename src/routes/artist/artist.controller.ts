@@ -23,7 +23,7 @@ import {
 } from '../../dto/artist';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
-import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
+//import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
 
 @Controller('artist')
 export class ArtistsController {
@@ -72,7 +72,8 @@ export class ArtistsController {
   ): Promise<Artist> {
     const existingArtistRecord: Artist | null =
       await this.artistsService.getArtist(id);
-    if (!existingArtistRecord) throw new InstanceNotFoundException(`artist with id = ${id}`);
+    if (!existingArtistRecord)
+      throw new InstanceNotFoundException(`artist with id = ${id}`);
     /*if (
       await this.artistsService.artistWithNameExists(updateArtistDto.name, id)
     )
@@ -90,8 +91,10 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
-  async deleteArtist(@Param('id', new ZodValidationPipe(artistIdSchema)) id: string) {
-    if (!await this.artistsService.deleteArtist(id))
+  async deleteArtist(
+    @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
+  ) {
+    if (!(await this.artistsService.deleteArtist(id)))
       throw new InstanceNotFoundException(`artist with id = ${id}`);
     // delete record from favorites (if it is there)
     await this.favoritesService.deleteArtistFromFavorites(id);

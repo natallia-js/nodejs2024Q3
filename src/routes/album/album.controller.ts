@@ -61,8 +61,7 @@ export class AlbumsController {
         throw new InstanceNotFoundException(
           `artist with id = ${createAlbumDto.artistId}`,
         );
-    } else
-      createAlbumDto.artistId = null;
+    } else createAlbumDto.artistId = null;
     return this.albumsService.addAlbum(createAlbumDto);
   }
 
@@ -77,14 +76,14 @@ export class AlbumsController {
     const existingAlbumRecord: Album | null = await this.albumsService.getAlbum(
       id,
     );
-    if (!existingAlbumRecord) throw new InstanceNotFoundException(`album with id = ${id}`);
+    if (!existingAlbumRecord)
+      throw new InstanceNotFoundException(`album with id = ${id}`);
     if (updateAlbumDto?.artistId) {
       if (!(await this.artistsService.getArtist(updateAlbumDto.artistId)))
         throw new InstanceNotFoundException(
           `artist with id = ${updateAlbumDto.artistId}`,
         );
-    } else
-      updateAlbumDto.artistId = null;
+    } else updateAlbumDto.artistId = null;
     const album: Album | null = await this.albumsService.updateAlbumData(
       id,
       updateAlbumDto,
@@ -97,8 +96,9 @@ export class AlbumsController {
   @Delete(':id')
   @HttpCode(204)
   async deleteAlbum(
-    @Param('id', new ZodValidationPipe(albumIdSchema)) id: string) {
-    if (!await this.albumsService.deleteAlbum(id))
+    @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
+  ) {
+    if (!(await this.albumsService.deleteAlbum(id)))
       throw new InstanceNotFoundException(`album with id = ${id}`);
     // delete record from favorites (if it is there)
     await this.favoritesService.deleteAlbumFromFavorites(id);

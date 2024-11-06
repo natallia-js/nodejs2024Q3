@@ -23,7 +23,7 @@ import {
 } from '../../dto/user';
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import { WrongCurrentPasswordException } from '../../exceptions/wrong-current-password.exception';
-import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
+//import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
 
 @Controller('user')
 export class UsersController {
@@ -68,7 +68,8 @@ export class UsersController {
     updatePasswordDto: UpdatePasswordDto,
   ): Promise<User> {
     const existingUserRecord: User | null = await this.usersService.getUser(id);
-    if (!existingUserRecord) throw new InstanceNotFoundException(`user with id = ${id}`);
+    if (!existingUserRecord)
+      throw new InstanceNotFoundException(`user with id = ${id}`);
     if (existingUserRecord.password !== updatePasswordDto.oldPassword)
       throw new WrongCurrentPasswordException();
     const user: User | null = await this.usersService.updateUserPassword(
@@ -82,8 +83,10 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
-  async deleteUser(@Param('id', new ZodValidationPipe(userIdSchema)) id: string) {
-    if (!await this.usersService.deleteUser(id))
+  async deleteUser(
+    @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
+  ) {
+    if (!(await this.usersService.deleteUser(id)))
       throw new InstanceNotFoundException(`user with id = ${id}`);
   }
 }

@@ -33,9 +33,8 @@ async function checkArtistAlbumPair(
   artistId: string | null | undefined,
   albumId: string | null | undefined,
   albumsService: AlbumsService,
-  artistsService: ArtistsService
-): Promise<{ artistId: string | null, albumId: string | null }>
-{
+  artistsService: ArtistsService,
+): Promise<{ artistId: string | null; albumId: string | null }> {
   if (!artistId && !albumId && artistId === null && albumId === null)
     return { artistId, albumId };
   if (albumId) {
@@ -44,11 +43,14 @@ async function checkArtistAlbumPair(
       throw new InstanceNotFoundException(`album with id = ${albumId}`);
     if (artistId) {
       if (album.artistId !== artistId)
-        throw new BadRequestParamsException(`The author of the album with id = ${albumId} is artist with id = ${album.artistId}`);
-    } else
-      return { artistId: album.artistId, albumId };
+        throw new BadRequestParamsException(
+          `The author of the album with id = ${albumId} is artist with id = ${album.artistId}`,
+        );
+    } else return { artistId: album.artistId, albumId };
   } else {
-    const artist: Artist | null = await artistsService.getArtist(artistId || '');
+    const artist: Artist | null = await artistsService.getArtist(
+      artistId || '',
+    );
     if (!artist)
       throw new InstanceNotFoundException(`artist with id = ${artistId}`);
     return { artistId: artistId || null, albumId: null };
@@ -88,11 +90,14 @@ export class TracksController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createTrackSchema))
   async addTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
-    if (!createTrackDto.artistId)
-      createTrackDto.artistId = null;
-    if (!createTrackDto.albumId)
-      createTrackDto.albumId = null;
-    const { artistId, albumId } = await checkArtistAlbumPair(createTrackDto.artistId, createTrackDto.albumId, this.albumsService, this.artistsService);
+    if (!createTrackDto.artistId) createTrackDto.artistId = null;
+    if (!createTrackDto.albumId) createTrackDto.albumId = null;
+    const { artistId, albumId } = await checkArtistAlbumPair(
+      createTrackDto.artistId,
+      createTrackDto.albumId,
+      this.albumsService,
+      this.artistsService,
+    );
     createTrackDto.artistId = artistId;
     createTrackDto.albumId = albumId;
     return this.tracksService.addTrack(createTrackDto);
@@ -109,7 +114,8 @@ export class TracksController {
     const existingTrackRecord: Track | null = await this.tracksService.getTrack(
       id,
     );
-    if (!existingTrackRecord) throw new InstanceNotFoundException(`track with id = ${id}`);
+    if (!existingTrackRecord)
+      throw new InstanceNotFoundException(`track with id = ${id}`);
     let newArtistId: string | null | undefined = undefined;
     let newAlbumId: string | null | undefined = undefined;
     if (updateTrackDto.hasOwnProperty('artistId'))
@@ -121,7 +127,8 @@ export class TracksController {
         newArtistId === undefined ? existingTrackRecord.artistId : newArtistId,
         newAlbumId === undefined ? existingTrackRecord.albumId : newAlbumId,
         this.albumsService,
-        this.artistsService);
+        this.artistsService,
+      );
       updateTrackDto.artistId = artistId;
       updateTrackDto.albumId = albumId;
     }
@@ -136,8 +143,10 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
-  async deleteTrack(@Param('id', new ZodValidationPipe(trackIdSchema)) id: string) {
-    if (!await this.tracksService.deleteTrack(id))
+  async deleteTrack(
+    @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
+  ) {
+    if (!(await this.tracksService.deleteTrack(id)))
       throw new InstanceNotFoundException(`track with id = ${id}`);
     // delete record from favorites (if it is there)
     await this.favoritesService.deleteTrackFromFavorites(id);
