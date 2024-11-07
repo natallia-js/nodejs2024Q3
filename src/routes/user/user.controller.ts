@@ -74,13 +74,20 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @ApiModifyInstanceResponse('Update a user\'s password', 'Updates a user\'s password by ID',
-    'The user\'s password has been updated', User, ['Users'], 'user')
+  @ApiModifyInstanceResponse(
+    "Update a user's password",
+    "Updates a user's password by ID",
+    "The user's password has been updated",
+    User,
+    ['Users'],
+    'user',
+  )
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
-    description: 'oldPassword parameter is wrong. Error message: "Current password is wrong"',
+    description:
+      'oldPassword parameter is wrong. Error message: "Current password is wrong"',
     schema: {
-      '$ref': getSchemaPath(ErrorType)
+      $ref: getSchemaPath(ErrorType),
     },
   })
   async changeUserPassword(

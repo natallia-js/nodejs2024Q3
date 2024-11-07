@@ -10,7 +10,6 @@ import {
   Put,
   UseInterceptors,
   UsePipes,
-  HttpStatus,
 } from '@nestjs/common';
 import { TracksService } from './track.service';
 import { ArtistsService } from '../artist/artist.service';
@@ -117,8 +116,14 @@ export class TracksController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @ApiModifyInstanceResponse('Update track information', 'Update library track information by UUID',
-    'The track has been updated', Track, ['Track'], 'track')
+  @ApiModifyInstanceResponse(
+    'Update track information',
+    'Update library track information by UUID',
+    'The track has been updated',
+    Track,
+    ['Track'],
+    'track',
+  )
   async updateTrackData(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateTrackSchema))

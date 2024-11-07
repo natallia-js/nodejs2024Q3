@@ -57,13 +57,13 @@ export const createAlbumSchema = z
 //export type CreateAlbumDto = z.infer<typeof createAlbumSchema>;
 
 export class CreateAlbumDto {
-  @ApiProperty({required: true })
+  @ApiProperty({ required: true })
   name: string;
 
-  @ApiProperty({required: true })
+  @ApiProperty({ required: true })
   year: number;
 
-  @ApiProperty({required: false })
+  @ApiProperty({ required: false })
   artistId: string | null;
 }
 
@@ -76,12 +76,12 @@ export const updateAlbumSchema = z.object({
 //export type UpdateAlbumDto = z.infer<typeof updateAlbumSchema>;
 
 export class UpdateAlbumDto {
-  @ApiProperty({required: false })
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty({required: false })
+  @ApiProperty({ required: false })
   year?: number;
 
-  @ApiProperty({required: false })
+  @ApiProperty({ required: false })
   artistId?: string | null;
 }

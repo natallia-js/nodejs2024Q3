@@ -1,9 +1,16 @@
 import { Type, applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiExtraModels, ApiOperation, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { Error as ErrorType } from '../dto/error';
 
 export const ApiCreateNewInstanceResponse = <TModel extends Type<any>>(
-  model: TModel, tags: string[], singleTypeNameString: string
+  model: TModel,
+  tags: string[],
+  singleTypeNameString: string,
 ) => {
   return applyDecorators(
     ApiOperation({
@@ -16,15 +23,16 @@ export const ApiCreateNewInstanceResponse = <TModel extends Type<any>>(
       status: HttpStatus.CREATED,
       description: `The ${singleTypeNameString} has been created`,
       schema: {
-        '$ref': getSchemaPath(model)
+        $ref: getSchemaPath(model),
       },
     }),
     ApiResponse({
       status: HttpStatus.BAD_REQUEST,
-      description: 'Bad request. Body does not contain required field(-s) or field value(-s) is(are) incorrect',
+      description:
+        'Bad request. Body does not contain required field(-s) or field value(-s) is(are) incorrect',
       schema: {
-        '$ref': getSchemaPath(ErrorType)
+        $ref: getSchemaPath(ErrorType),
       },
-    })
+    }),
   );
 };

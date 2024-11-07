@@ -715,7 +715,7 @@ paths:
           description: 'Bad request. Parameter albumId is invalid (not uuid).
                        Error message: "Bad request params: Album id is not valid"'
         404:
-          description: 'Album not found. Error message: "Instance not found: album with id = [trackId]"'
+          description: 'Album not found. Error message: "Instance not found: album with id = [albumId]"'
   /favs/artist/{id}:
     parameters:
       - name: id
@@ -749,4 +749,4 @@ paths:
           description: 'Bad request. Parameter artistId is invalid (not uuid).
                        Error message: "Bad request params: Artist id is not valid"'
         404:
-          description: 'Artist not found. Error message: "Instance not found: artist with id = [trackId]"'
+          description: 'Artist not found. Error message: "Instance not found: artist with id = [artistId]"'

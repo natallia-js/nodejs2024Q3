@@ -78,8 +78,14 @@ export class AlbumsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @ApiModifyInstanceResponse('Update album information', 'Update library album information by UUID',
-    'The album has been updated', Album, ['Album'], 'album')
+  @ApiModifyInstanceResponse(
+    'Update album information',
+    'Update library album information by UUID',
+    'The album has been updated',
+    Album,
+    ['Album'],
+    'album',
+  )
   async updateAlbumData(
     @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateAlbumSchema))

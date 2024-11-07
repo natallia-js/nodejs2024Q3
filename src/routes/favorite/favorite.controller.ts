@@ -21,6 +21,8 @@ import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { Favorites } from '../../dto/favorites';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
+import { ApiAddItemToFavorites } from '../../decorators/ApiAddItemToFavorites';
+import { ApiDelItemFromFavorites } from '../../decorators/ApiDelItemFromFavorites';
 
 @ApiTags('favs')
 @Controller('favs')
@@ -35,7 +37,12 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
-  @ApiGetAllDataResponse(Favorites, ['Favorites'], 'favorites')
+  @ApiGetAllDataResponse(
+    Favorites,
+    ['Favorites'],
+    'favorites',
+    ' movies, tracks and books',
+  )
   async getAllFavorites(): Promise<Favorites> {
     return await this.favoritesService.getAllFavorites();
   }
@@ -43,6 +50,7 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('album/:id')
   @HttpCode(201)
+  @ApiAddItemToFavorites(['Favorites'], 'album')
   async addAlbum(
     @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
   ) {
@@ -55,6 +63,7 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('artist/:id')
   @HttpCode(201)
+  @ApiAddItemToFavorites(['Favorites'], 'artist')
   async addArtist(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
   ) {
@@ -67,6 +76,7 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('track/:id')
   @HttpCode(201)
+  @ApiAddItemToFavorites(['Favorites'], 'track')
   async addTrack(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
   ) {
@@ -79,6 +89,7 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete('album/:id')
   @HttpCode(204)
+  @ApiDelItemFromFavorites(['Favorites'], 'album')
   async deleteAlbum(
     @Param('id', new ZodValidationPipe(albumIdSchema)) id: string,
   ) {
@@ -91,6 +102,7 @@ export class FavoritesController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete('artist/:id')
   @HttpCode(204)
+  @ApiDelItemFromFavorites(['Favorites'], 'artist')
   async deleteArtist(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
   ) {
@@ -100,9 +112,11 @@ export class FavoritesController {
       throw new InstanceNotFavoriteException(`artist with id = ${id}`);
   }
 
+  @ApiDelItemFromFavorites(['Favorites'], 'track')
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete('track/:id')
   @HttpCode(204)
+  @ApiDelItemFromFavorites(['Favorites'], 'track')
   async deleteTrack(
     @Param('id', new ZodValidationPipe(trackIdSchema)) id: string,
   ) {

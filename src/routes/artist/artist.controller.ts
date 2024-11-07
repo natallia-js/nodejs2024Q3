@@ -75,8 +75,14 @@ export class ArtistsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   @HttpCode(200)
-  @ApiModifyInstanceResponse('Update artist information', 'Update artist information by UUID',
-    'The artist has been updated', Artist, ['Artist'], 'artist')
+  @ApiModifyInstanceResponse(
+    'Update artist information',
+    'Update artist information by UUID',
+    'The artist has been updated',
+    Artist,
+    ['Artist'],
+    'artist',
+  )
   async updateArtistData(
     @Param('id', new ZodValidationPipe(artistIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateArtistSchema))

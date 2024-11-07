@@ -72,10 +72,10 @@ export const createUserSchema = z
 //export type CreateUserDto = z.infer<typeof createUserSchema>;
 
 export class CreateUserDto {
-  @ApiProperty({ description: 'The user\'s login', required: true })
+  @ApiProperty({ description: "The user's login", required: true })
   login: string;
 
-  @ApiProperty({ description: 'The user\'s password', required: true })
+  @ApiProperty({ description: "The user's password", required: true })
   password: string;
 }
 
@@ -89,9 +89,9 @@ export const updatePasswordSchema = z
 //export type UpdatePasswordDto = z.infer<typeof updatePasswordSchema>;
 
 export class UpdatePasswordDto {
-  @ApiProperty({ description: 'The user\'s old password', required: true })
+  @ApiProperty({ description: "The user's old password", required: true })
   oldPassword: string;
 
-  @ApiProperty({ description: 'The user\'s new password', required: true })
+  @ApiProperty({ description: "The user's new password", required: true })
   newPassword: string;
 }

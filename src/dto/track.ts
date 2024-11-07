@@ -73,8 +73,8 @@ export class CreateTrackDto {
 
   @ApiProperty({ required: false })
   artistId: string | null;
-  
-  @ApiProperty({required: false })
+
+  @ApiProperty({ required: false })
   albumId: string | null;
 
   @ApiProperty({ required: true })

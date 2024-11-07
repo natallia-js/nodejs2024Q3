@@ -46,10 +46,10 @@ export const createArtistSchema = z
 //export type CreateArtistDto = z.infer<typeof createArtistSchema>;
 
 export class CreateArtistDto {
-  @ApiProperty({required: true })
+  @ApiProperty({ required: true })
   name: string;
 
-  @ApiProperty({required: true })
+  @ApiProperty({ required: true })
   grammy: boolean;
 }
 
@@ -61,9 +61,9 @@ export const updateArtistSchema = z.object({
 //export type UpdateArtistDto = z.infer<typeof updateArtistSchema>;
 
 export class UpdateArtistDto {
-  @ApiProperty({required: false })
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty({required: false })
+  @ApiProperty({ required: false })
   grammy?: boolean;
 }
