@@ -68,16 +68,16 @@ export const createTrackSchema = z
 //export type CreateTrackDto = z.infer<typeof createTrackSchema>;
 
 export class CreateTrackDto {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   artistId: string | null;
   
-  @ApiProperty()
+  @ApiProperty({required: false })
   albumId: string | null;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   duration: number;
 }
 
@@ -91,15 +91,15 @@ export const updateTrackSchema = z.object({
 //export type UpdateTrackDto = z.infer<typeof updateTrackSchema>;
 
 export class UpdateTrackDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty()
+  @ApiProperty({ format: 'uuid', required: false })
   artistId?: string | null;
 
-  @ApiProperty()
+  @ApiProperty({ format: 'uuid', required: false })
   albumId?: string | null;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   duration?: number;
 }

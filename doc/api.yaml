@@ -355,9 +355,6 @@ paths:
                   type: string
                   format: uuid
                   nullable: true
-              required:
-                - name
-                - duration
       responses:
         200:
           description: The track has been updated
@@ -499,9 +496,6 @@ paths:
                   type: string
                   format: uuid
                   nullable: true
-              required:
-                - name
-                - year
       responses:
         200:
           description: The album has been updated
