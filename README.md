@@ -66,3 +66,15 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+## Making docker images
+
+### Application image
+
+docker build -t docker-nodejs2024Q3-service .
+
+### Database management system image
+
+## Running a multi-container application
+
+docker run -p 4000:4000 docker-nodejs2024Q3-service

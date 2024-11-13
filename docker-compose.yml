@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+    db:
+        container_name: nodejs2024Q3-service_postgresDB_container
+        build:
+            context: postgres/
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        ports:
+            - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+        restart: always
+        networks:
+            - postgres-network
+
+    app:
+        # ----- Local image ----- #
+        container_name: nodejs2024Q3-service
+        build:
+            context: .
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        ports:
+            - '${PORT}:${PORT}'
+        depends_on:
+            - db
+        restart: always
+        networks:
+            - postgres-network
+
+      # ----- Remote image ----- #
+      #image: vonubat/nodejs2024q1-service-app:latest
+      #environment:
+      #  - PORT=${PORT}
+      #ports:
+      #  - '${PORT}:${PORT}'
+      #depends_on:
+      #  - db
+      #volumes:
+      #  - ./src:/home/node/src
+      #restart: on-failure
+      #networks:
+      #  - home-library
+
+networks:
+    postgres-network:
+        driver: bridge
