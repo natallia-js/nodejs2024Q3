@@ -13,16 +13,18 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_HOST: ${POSTGRES_HOST}
+            POSTGRES_PORT: ${POSTGRES_PORT}
         ports:
-            - '5000:${POSTGRES_PORT}'
+            - '${POSTGRES_PORT}:${POSTGRES_PORT}'
         volumes:
             - dbData:/var/lib/postgresql/data
             - dbLogs:/var/log/postgresql
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U admin"]
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
             interval: 10s
             timeout: 5s
             retries: 5
+            start_period: 10s
         expose:
             - ${POSTGRES_PORT}
         networks:
@@ -32,7 +34,7 @@ services:
         container_name: nodejs2024Q3-service_app
         depends_on:
             postgresdb:
-                condition: service_healthy	
+                condition: service_healthy
         build:
             context: ./docker
             dockerfile: Dockerfile_app
