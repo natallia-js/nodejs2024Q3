@@ -4,10 +4,10 @@ services:
     postgresdb:
         container_name: nodejs2024Q3-service_db
         build:
-            context: ./docker
+            context: .
             dockerfile: Dockerfile_db
         restart: always
-        env_file: ./.env
+        env_file: .env
         environment:
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -36,10 +36,10 @@ services:
             postgresdb:
                 condition: service_healthy
         build:
-            context: ./docker
+            context: .
             dockerfile: Dockerfile_app
         restart: always
-        env_file: ./.env
+        env_file: .env
         environment:
             PORT: ${PORT}
             DATABASE_URL: ${DATABASE_URL}
@@ -51,7 +51,6 @@ services:
         expose:
             - ${PORT}
         stdin_open: true
-        tty: true
         networks:
             - postgres-network
 
