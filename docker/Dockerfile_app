@@ -1,12 +1,12 @@
-ARG NODE_VERSION=22.10.0
-ARG SRC_DIR=/src
+ARG NODE_VERSION=22.9.0
+ARG APP_DIR=/app
 
 # Defining from what image we want to build from
 # (this image comes with Node.js and NPM already installed)
 FROM node:${NODE_VERSION}-alpine AS build
 
 # Creating a directory to hold the application source code inside the image
-WORKDIR ${SRC_DIR}
+WORKDIR ${APP_DIR}
 
 # Copying package.json and package-lock.json files in source files directory.
 # A wildcard is used to ensure both package.json AND package-lock.json are copied.
@@ -19,7 +19,7 @@ RUN npm ci && npm cache clean --force
 # Copying the rest files in source files directory
 COPY . .
 
-FROM node:${NODE_VERSION}-alpine as run
-WORKDIR ${SRC_DIR}
-COPY --from=build ${SRC_DIR} ${SRC_DIR}
-CMD npm run start:containers
+#FROM node:${NODE_VERSION}-alpine as run
+#WORKDIR ${APP_DIR}
+#COPY --from=build ${APP_DIR} ${APP_DIR}
+CMD npm run start:prisma:dev

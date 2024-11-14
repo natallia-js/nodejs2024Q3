@@ -4,6 +4,7 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Download and install Docker and Docker Compose.
 
 ## Downloading
 
@@ -13,24 +14,47 @@ git clone {repository URL}
 
 ## Getting started
 
-```
-1. npm install (admin rights may be needed)
-2. Create .env file (based on .env.example): ./.env
-3. Apply pending migrations: npx prisma migrate deploy
-4. Generate Prisma Client: npx prisma generate
+1. Create .env file (based on .env.example): ./.env
+(modify environment variables as needed; specifying ports, make sure there are no port conflicts in your system)
 
-P.S. In the created .env file there is a DATABASE_URL=file:memory string (see https://www.sqlite.org/inmemorydb.html).
-     The DATABASE_URL parameter value is used by SQLite.
-     According to the task, the database should be stored IN MEMORY.
+2. Generate Prisma Client:
+```
+npx prisma generate
 ```
 
 ## Running application
 
+Use Docker Compose to run the application:
+
 ```
-npm run start
+npm run docker
 ```
 
-After starting the app on port (4000 as default) you can open in your browser OpenAPI documentation by typing http://localhost:4000/doc/. For more information about OpenAPI/Swagger please visit https://swagger.io/.
+This command builds Docker images and starts database and app services defined in docker-compose.yml file.
+
+After starting the app on port (4000 as default) you can access it in your browser (http://localhost:4000) and open
+in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+
+## Docker security scan
+
+You can use the following npm scripts to scan Docker images for vulnerabilities:
+
+```
+npm run dockerscan:app (for application image)
+npm run dockerscan:db (for database image)
+```
+
+## How to stop the application
+
+```
+docker-compose down
+```
+
+This command stops the application, removes containers, volumes and newtworks that were created by
+```
+npm run docker
+```
+command.
 
 ## Testing
 
@@ -66,15 +90,3 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
-
-## Making docker images
-
-### Application image
-
-docker build -t docker-nodejs2024Q3-service .
-
-### Database management system image
-
-## Running a multi-container application
-
-docker run -p 4000:4000 docker-nodejs2024Q3-service

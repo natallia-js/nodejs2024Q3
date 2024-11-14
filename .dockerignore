@@ -1,5 +1,4 @@
 **/.dockerignore
-**/.env
 **/.git
 **/.gitignore
 **/.vs
@@ -8,6 +7,4 @@
 **/compose.y*ml
 **/Dockerfile*
 **/node_modules
-**/images_for_readme
 **/dist
-README.md
