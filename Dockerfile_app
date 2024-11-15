@@ -10,7 +10,7 @@ WORKDIR /app
 # Copying package.json and package-lock.json files in source files directory.
 # A wildcard (*) is used to ensure both package.json AND package-lock.json are copied.
 # When using npm version 4 or earlier a package-lock.json file will not be generated.
-COPY package*.json ./
+COPY package*.json .
 
 # Installing app dependencies
 RUN npm install && npm cache clean --force
