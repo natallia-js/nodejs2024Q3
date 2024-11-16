@@ -1,10 +1,10 @@
 services:
     postgresdb:
         container_name: nodejs2024Q3-service_db
-        image: natalliaf/nodejs2024q3-service_postgresdb:latest
-        #build:
-        #    context: .
-        #    dockerfile: Dockerfile_db
+        #image: natalliaf/nodejs2024q3-service_postgresdb:latest
+        build:
+            context: .
+            dockerfile: Dockerfile_db
         restart: always
         env_file: .env
         environment:
@@ -35,10 +35,10 @@ services:
         depends_on:
             postgresdb:
                 condition: service_healthy
-        image: natalliaf/nodejs2024q3-service_app:latest
-        #build:
-        #    context: .
-        #    dockerfile: Dockerfile_app
+        #image: natalliaf/nodejs2024q3-service_app:latest
+        build:
+            context: .
+            dockerfile: Dockerfile_app
         restart: always
         env_file: .env
         environment:

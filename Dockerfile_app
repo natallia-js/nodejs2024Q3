@@ -16,7 +16,5 @@ RUN npm install && npm cache clean --force
 # Copying the rest files in source files directory
 COPY . .
 
-#FROM node:ts-alpine AS run
-#WORKDIR /app
-#COPY --from=build /app /app
+# Generating Prisma Client, performing migrations and starting application in development mode
 CMD npm run start:prisma:dev

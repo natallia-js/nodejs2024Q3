@@ -14,47 +14,86 @@ git clone {repository URL}
 
 ## Getting started
 
-1. Create .env file (based on .env.example): ./.env
-(modify environment variables as needed; specifying ports, make sure there are no port conflicts in your system)
+1. Switch to the necessary branch:
 
-2. Generate Prisma Client:
 ```
-npx prisma generate
+git checkout docker
 ```
+
+2. Create .env file (based on .env.example): ./.env
+(modify environment variables as needed; specifying ports, make sure there are no port conflicts in your system)
 
 ## Running application
 
 Use Docker Compose to run the application:
 
 ```
-npm run docker
+npm run docker:up:build
 ```
 
-This command builds Docker images and starts database and app services defined in docker-compose.yml file.
+or
+
+```
+npm run docker:up
+```
+
+The first command builds Docker images and starts database and app services defined in docker-compose.yml file.
+
+The second command just starts services, without building them.
 
 After starting the app on port (4000 as default) you can access it in your browser (http://localhost:4000) and open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+
+## How to stop running containers
+
+1. To stop containers without their deletion:
+
+```
+npm run docker:stop
+```
+
+2. To stop containers, remove them and all volumes and networks that were created by
+```
+npm run docker
+```
+command:
+
+```
+npm run docker:down
+```
+
+To remove all the mentioned above including volumes:
+
+```
+npm run docker:down:volumes
+```
+
+## Where to find built images
+
+Built application and database images are pushed to DockerHub:
+
+```
+natalliaf/nodejs2024q3-service_app:latest (image size 452.97 Mb)
+natalliaf/nodejs2024q3-service_postgresdb:latest (image size 426.71 Mb)
+```
 
 ## Docker security scan
 
 You can use the following npm scripts to scan Docker images for vulnerabilities:
 
-```
-npm run dockerscan:app (for application image)
-npm run dockerscan:db (for database image)
-```
-
-## How to stop the application
+1. To display a complete view of all the vulnerabilities in the image:
 
 ```
-docker-compose down
+npm run docker:scan:app:cves (for application image)
+npm run docker:scan:db:cves (for database image)
 ```
 
-This command stops the application, removes containers, volumes and newtworks that were created by
+2.  To display a quick overview of an image (an overview of the vulnerabilities found in a given image and its base image):
+
 ```
-npm run docker
+npm run docker:scan:app:quickview (for application image)
+npm run docker:scan:db:quickview (for database image)
 ```
-command.
 
 ## Testing
 
@@ -90,6 +129,3 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
-
-
-image sizes: app 452.97 Mb, db 426.71 Mb
