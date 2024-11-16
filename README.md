@@ -38,9 +38,11 @@ or
 npm run docker:up
 ```
 
-The first command builds Docker images and starts database and app services defined in docker-compose.yml file.
+The first command builds Docker images and starts database and app services defined in docker-compose.yml file. 
 
 The second command just starts services, without building them.
+
+In both cases application is started in development mode and automatically rebuilds on changes made in source code.
 
 After starting the app on port (4000 as default) you can access it in your browser (http://localhost:4000) and open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
@@ -94,7 +96,13 @@ npm run docker:scan:db:quickview (for database image)
 
 ## Testing
 
-After application running open new terminal and enter:
+Make sure, before testing, to do the following:
+
+```
+npm install
+```
+
+Then run the application [in container]. After application running open new terminal and enter:
 
 To run all tests without authorization
 
