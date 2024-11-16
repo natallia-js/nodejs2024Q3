@@ -9,7 +9,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/natallia-js/nodejs2024Q3-service.git
 ```
 
 ## Getting started
@@ -21,6 +21,7 @@ git checkout docker
 ```
 
 2. Create .env file (based on .env.example): ./.env
+
 (modify environment variables as needed; specifying ports, make sure there are no port conflicts in your system)
 
 ## Running application
@@ -52,11 +53,7 @@ in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 npm run docker:stop
 ```
 
-2. To stop containers, remove them and all volumes and networks that were created by
-```
-npm run docker
-```
-command:
+2. To stop containers, remove them and all volumes and networks that were created by `npm run docker` command:
 
 ```
 npm run docker:down
