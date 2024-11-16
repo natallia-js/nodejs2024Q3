@@ -26,7 +26,7 @@ export class ArtistsService {
     return artist ? new Artist(artist) : null;
   }
 
-  async artistWithNameExists(
+  /*async artistWithNameExists(
     name: string | undefined,
     notId?: string,
   ): Promise<boolean> {
@@ -41,7 +41,7 @@ export class ArtistsService {
         where: { NOT: { id: notId }, name: name || '' },
       }),
     );
-  }
+  }*/
 
   async addArtist(newArtistData: CreateArtistDto): Promise<Artist> {
     const artist: ArtistModel = await this.prisma.artist.create({
