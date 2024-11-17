@@ -1,1 +1,3 @@
 FROM postgres:bullseye
+RUN	mkdir /dbLogs
+RUN	chown postgres:postgres /dbLogs
