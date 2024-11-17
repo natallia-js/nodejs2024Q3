@@ -72,7 +72,7 @@ npm run docker:down:volumes
 Built application and database images are pushed to DockerHub:
 
 ```
-natalliaf/nodejs2024q3-service_app:latest (image size 452.97 Mb)
+natalliaf/nodejs2024q3-service_app:latest (image size 452.98 Mb)
 natalliaf/nodejs2024q3-service_postgresdb:latest (image size 426.71 Mb)
 ```
 
