@@ -1,0 +1,65 @@
+services:
+    postgresdb:
+        container_name: nodejs2024Q3-service_db
+        #image: natalliaf/nodejs2024q3-service-postgresdb:latest
+        build:
+            context: .
+            dockerfile: Dockerfile_db
+        restart: always
+        env_file: .env
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_HOST: ${POSTGRES_HOST}
+            POSTGRES_PORT: ${POSTGRES_PORT}
+        ports:
+            - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+        volumes:
+            - dbData:/var/lib/postgresql/data
+            - dbLogs:/dbLogs
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+        expose:
+            - ${POSTGRES_PORT}
+        networks:
+            - postgres-network
+        command: postgres -c port=${POSTGRES_PORT} -c logging_collector=on -c log_destination=stderr -c log_directory=/dbLogs -c log_statement=all
+
+    app:
+        container_name: nodejs2024Q3-service_app
+        depends_on:
+            postgresdb:
+                condition: service_healthy
+        #image: natalliaf/nodejs2024q3-service-app:latest
+        build:
+            context: .
+            dockerfile: Dockerfile_app
+        restart: always
+        env_file: .env
+        environment:
+            PORT: ${PORT}
+            DATABASE_URL: ${DATABASE_URL}
+        ports:
+            - '${PORT}:${PORT}'
+        volumes:
+            - .:/app
+            - node-modules:/app/node_modules
+        expose:
+            - ${PORT}
+        stdin_open: true
+        networks:
+            - postgres-network
+
+networks:
+    postgres-network:
+        driver: bridge
+
+volumes:
+    dbData:
+    dbLogs:
+    node-modules:
