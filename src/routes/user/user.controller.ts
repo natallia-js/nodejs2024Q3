@@ -11,6 +11,7 @@ import {
   Put,
   UseInterceptors,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { UsersService } from './user.service';
@@ -25,7 +26,6 @@ import {
 import { InstanceNotFoundException } from '../../exceptions/instance-not-found.exception';
 import { WrongCurrentPasswordException } from '../../exceptions/wrong-current-password.exception';
 import { ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
-//import { BadRequestParamsException } from '../../exceptions/bad-request-params.exception';
 import { ApiGetAllDataResponse } from '../../decorators/ApiGetAllDataResponse';
 import { ApiGetCertainItemResponse } from '../../decorators/ApiGetCertainItemResponse';
 import { ApiCreateNewInstanceResponse } from '../../decorators/ApiCreateNewInstanceResponse';
@@ -33,11 +33,16 @@ import { ApiModifyInstanceResponse } from '../../decorators/ApiModifyInstanceRes
 import { Error as ErrorType } from '../../dto/error';
 import { ApiDelInstanceResponse } from '../../decorators/ApiDelInstanceResponse';
 
+
+
+import { Public } from 'src/decorators/Public';
+
 @ApiTags('user')
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)
@@ -64,10 +69,6 @@ export class UsersController {
   @UsePipes(new ZodValidationPipe(createUserSchema))
   @ApiCreateNewInstanceResponse(User, ['Users'], 'user')
   async addUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    /*if (await this.usersService.userWithLoginExists(createUserDto.login))
-      throw new BadRequestParamsException(
-        'User with this login already exists',
-      );*/
     return await this.usersService.addUser(createUserDto);
   }
 

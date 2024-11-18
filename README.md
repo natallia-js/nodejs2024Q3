@@ -109,6 +109,10 @@ To run all tests without authorization
 ```
 npm run test
 ```
+
+!Attention: some tests on `npm run test` may fail due to @unique constraint on model User.
+Remove this constraint, recreate Prisma Client and reapply migrations.
+
 ![test results](images_for_readme/no-auth-test-results1.png)
 
 ![test results](images_for_readme/no-auth-test-results2.png)

@@ -79,6 +79,32 @@ export class CreateUserDto {
   password: string;
 }
 
+export const authUserSchema = z
+  .object({
+    login: z.string().min(1, 'Minimal login length is 1 symbol'),
+    password: z.string().min(1, 'Minimal password length is 1 symbol'),
+  })
+  .required();
+
+export class AuthUserDto {
+  @ApiProperty({ description: "The user's login", required: true })
+  login: string;
+
+  @ApiProperty({ description: "The user's password", required: true })
+  password: string;
+}
+
+export const refreshTokenSchema = z
+  .object({
+    refreshToken: z.string(),
+  })
+  .required();
+
+export class RefreshTokenDto {
+  @ApiProperty({ description: 'Refresh token', required: true })
+  refreshToken: string;
+}
+
 export const updatePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, 'Unknown current password'), // current password

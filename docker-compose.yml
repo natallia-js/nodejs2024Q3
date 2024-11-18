@@ -1,7 +1,7 @@
 services:
     postgresdb:
         container_name: nodejs2024Q3-service_db
-        #image: natalliaf/nodejs2024q3-service_postgresdb:latest
+        #image: natalliaf/nodejs2024q3-service-postgresdb:latest
         build:
             context: .
             dockerfile: Dockerfile_db
@@ -35,7 +35,7 @@ services:
         depends_on:
             postgresdb:
                 condition: service_healthy
-        #image: natalliaf/nodejs2024q3-service_app:latest
+        #image: natalliaf/nodejs2024q3-service-app:latest
         build:
             context: .
             dockerfile: Dockerfile_app

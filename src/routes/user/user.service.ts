@@ -19,12 +19,12 @@ export class UsersService {
     return user ? new User(user) : null;
   }
 
-  /*async userWithLoginExists(login: string): Promise<boolean> {
-    const user: UserModel | null = await this.prisma.user.findUnique({
-      where: { login: login || '' },
+  async getUserByAuthData({ login, password }: { login: string; password: string }): Promise<User | null> {
+    const user: UserModel | null = await this.prisma.user.findFirst({
+      where: { login, password },
     });
-    return Boolean(user);
-  }*/
+    return user ? new User(user) : null;
+  }
 
   async addUser(newUserData: CreateUserDto): Promise<User> {
     const user: UserModel = await this.prisma.user.create({
