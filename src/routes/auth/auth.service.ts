@@ -38,13 +38,12 @@ export class AuthService {
     if (!user)
       throw new UserWithLoginAndPasswordNotFoundException(authUserDto.login);
     const payload = { userId: user.id, login: user.login };
-    return this.getNewTokens(payload);
+    return await this.getNewTokens(payload);
   }
   
   async refresh(refreshTokenDto: RefreshTokenDto): Promise<Tokens> {
     if (!refreshTokenDto?.refreshToken)
       throw new NoRefreshTokenException();
-
     try {
       const { userId, login }: PayloadDto = this.jwtService.verify(
         refreshTokenDto.refreshToken,
@@ -52,23 +51,24 @@ export class AuthService {
           secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
         },
       );
-      const tokens = this.getNewTokens({ userId, login });
+      const tokens = await this.getNewTokens({ userId, login });
       return new Tokens(tokens);
     } catch {
       throw new InvalidRefreshTokenException();
     }
   }
 
-  getNewTokens(payload: PayloadDto): Tokens {
-    return {
-      accessToken: this.jwtService.sign(payload, {
+  private async getNewTokens(payload: PayloadDto): Promise<Tokens> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
         secret: this.configService.get('JWT_SECRET_KEY'),
         expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
       }),
-      refreshToken: this.jwtService.sign(payload, {
+      this.jwtService.signAsync(payload, {
         secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
         expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
       }),
-    };
+    ]);
+    return { accessToken, refreshToken };
   }
 }
