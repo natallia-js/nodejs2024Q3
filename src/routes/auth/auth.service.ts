@@ -28,8 +28,9 @@ export class AuthService {
   }
 
   async getUserByAuthData({ login, password }: { login: string, password: string }): Promise<User | null> {
-    const passwordHash = await this.calcPasswordHash(password);
-    return await this.usersService.getUserByAuthData({ login, password: passwordHash });
+    const users = await this.usersService.getUsersByLogin(login);
+    if (!users) return null;
+    return users.find(user => bcrypt.compareSync(password, user.password)) || null;
   }
 
   async login(authUserDto: AuthUserDto): Promise<Tokens> {
@@ -37,7 +38,7 @@ export class AuthService {
     if (!user)
       throw new UserWithLoginAndPasswordNotFoundException(authUserDto.login);
     const payload = { userId: user.id, login: user.login };
-    return await this.getNewTokens(payload);
+    return this.getNewTokens(payload);
   }
   
   async refresh(refreshTokenDto: RefreshTokenDto): Promise<Tokens> {
@@ -51,20 +52,20 @@ export class AuthService {
           secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
         },
       );
-      const tokens = await this.getNewTokens({ userId, login });
+      const tokens = this.getNewTokens({ userId, login });
       return new Tokens(tokens);
     } catch {
       throw new InvalidRefreshTokenException();
     }
   }
 
-  async getNewTokens(payload: PayloadDto): Promise<Tokens> {
+  getNewTokens(payload: PayloadDto): Tokens {
     return {
-      accessToken: await this.jwtService.signAsync(payload, {
+      accessToken: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET_KEY'),
         expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
       }),
-      refreshToken: await this.jwtService.signAsync(payload, {
+      refreshToken: this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
         expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
       }),

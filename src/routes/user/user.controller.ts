@@ -33,16 +33,11 @@ import { ApiModifyInstanceResponse } from '../../decorators/ApiModifyInstanceRes
 import { Error as ErrorType } from '../../dto/error';
 import { ApiDelInstanceResponse } from '../../decorators/ApiDelInstanceResponse';
 
-
-
-import { Public } from 'src/decorators/Public';
-
 @ApiTags('user')
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @HttpCode(200)

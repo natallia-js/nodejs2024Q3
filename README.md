@@ -106,6 +106,15 @@ Then run the application [in container]. After application running open new term
 
 To run all tests without authorization
 
+auth.module.ts
+
+comment
+
+{
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+},
+
 ```
 npm run test
 ```

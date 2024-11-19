@@ -53,7 +53,7 @@ describe('Refresh (e2e)', () => {
     if (shouldAuthorizationBeTested) {
       const { accessToken, refreshToken, mockUserId, login, token } =
         await getTokenAndUserId(request);
-      userTokens = { userId: mockUserId, login, accessToken, refreshToken };
+      userTokens = { userId: mockUserId, login, accessToken, refreshToken }; console.log( mockUserId, login, accessToken, refreshToken)
       headers['Authorization'] = token;
     }
   });
@@ -67,12 +67,9 @@ describe('Refresh (e2e)', () => {
 
   describe('Refresh', () => {
     it('should correctly get new tokens pair', async () => {
-      console.log('start')
       const response = await request
         .post(authRoutes.refresh)
         .send({ refreshToken: userTokens.refreshToken });
-
-        console.log('response=',response)
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.body).toBeInstanceOf(Object);
