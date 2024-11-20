@@ -11,7 +11,6 @@ import {
   Put,
   UseInterceptors,
   UsePipes,
-  UseGuards,
 } from '@nestjs/common';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { UsersService } from './user.service';

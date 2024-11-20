@@ -85,7 +85,9 @@ describe('Refresh (e2e)', () => {
 
       const accessTokenPayload: TokenPayload = await verifyToken(accessToken);
       const refreshTokenPayload: TokenPayload = await verifyToken(refreshToken);
-      expect(refreshTokenPayload.exp).toBeGreaterThan(accessTokenPayload.exp || 0);
+      expect(refreshTokenPayload.exp).toBeGreaterThan(
+        accessTokenPayload.exp || 0,
+      );
     });
 
     it('should fail with 403 (invalid refresh token)', async () => {

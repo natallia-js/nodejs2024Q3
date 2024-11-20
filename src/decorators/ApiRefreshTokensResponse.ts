@@ -8,9 +8,7 @@ import {
 import { Error as ErrorType } from '../dto/error';
 import { Tokens } from '../dto/tokens';
 
-export const ApiRefreshTokensResponse = (
-  tags: string[],
-) => {
+export const ApiRefreshTokensResponse = (tags: string[]) => {
   return applyDecorators(
     ApiOperation({
       summary: 'Refresh tokens',
@@ -27,19 +25,17 @@ export const ApiRefreshTokensResponse = (
     }),
     ApiResponse({
       status: HttpStatus.UNAUTHORIZED,
-      description:
-        'Bad request. Body does not contain refresh token',
+      description: 'Bad request. Body does not contain refresh token',
       schema: {
         $ref: getSchemaPath(ErrorType),
       },
     }),
     ApiResponse({
       status: HttpStatus.FORBIDDEN,
-      description:
-        'Refresh token is invalid or expired',
+      description: 'Refresh token is invalid or expired',
       schema: {
         $ref: getSchemaPath(ErrorType),
       },
-    }),    
+    }),
   );
 };

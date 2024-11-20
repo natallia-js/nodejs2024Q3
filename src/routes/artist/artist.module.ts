@@ -5,10 +5,7 @@ import { PrismaModule } from '../../additional-services/prisma.module';
 import { FavoritesModule } from '../favorite/favorite.module';
 
 @Module({
-  imports: [
-    PrismaModule,
-    forwardRef(() => FavoritesModule),
-  ],
+  imports: [PrismaModule, forwardRef(() => FavoritesModule)],
   controllers: [ArtistsController],
   providers: [ArtistsService],
   exports: [ArtistsService],

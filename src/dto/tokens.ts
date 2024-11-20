@@ -7,16 +7,15 @@ export class Tokens {
     required: true,
   })
   accessToken: string;
-  
+
   @ApiProperty({
     description: 'Refresh token',
     nullable: false,
     required: true,
   })
   refreshToken: string;
-  
+
   constructor(tokens: Partial<Tokens>) {
     Object.assign(this, tokens);
   }
 }
-  

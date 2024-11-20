@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../user/user.service';
-import { CreateUserDto, User, AuthUserDto, RefreshTokenDto } from '../../dto/user';
+import {
+  CreateUserDto,
+  User,
+  AuthUserDto,
+  RefreshTokenDto,
+} from '../../dto/user';
 import { UserWithLoginAndPasswordNotFoundException } from '../../exceptions/user-with-login-and-password-not-found.exception';
 import { Tokens } from '../../dto/tokens';
 import { NoRefreshTokenException } from '../../exceptions/no-refresh-token.exception';
@@ -19,18 +24,33 @@ export class AuthService {
   ) {}
 
   async calcPasswordHash(password: string): Promise<string> {
-    return await bcrypt.hash(password, Number(this.configService.get('CRYPT_SALT') || '10'));
+    return await bcrypt.hash(
+      password,
+      Number(this.configService.get('CRYPT_SALT') || '10'),
+    );
   }
 
   async signup(createUserDto: CreateUserDto): Promise<User> {
+    //Promise.reject(new Error("Unhandled rejection test"));
     const passwordHash = await this.calcPasswordHash(createUserDto.password);
-    return await this.usersService.addUser({ login: createUserDto.login, password: passwordHash });
+    return await this.usersService.addUser({
+      login: createUserDto.login,
+      password: passwordHash,
+    });
   }
 
-  async getUserByAuthData({ login, password }: { login: string, password: string }): Promise<User | null> {
+  async getUserByAuthData({
+    login,
+    password,
+  }: {
+    login: string;
+    password: string;
+  }): Promise<User | null> {
     const users = await this.usersService.getUsersByLogin(login);
     if (!users) return null;
-    return users.find(user => bcrypt.compareSync(password, user.password)) || null;
+    return (
+      users.find((user) => bcrypt.compareSync(password, user.password)) || null
+    );
   }
 
   async login(authUserDto: AuthUserDto): Promise<Tokens> {
@@ -40,7 +60,7 @@ export class AuthService {
     const payload = { userId: user.id, login: user.login };
     return await this.getNewTokens(payload);
   }
-  
+
   async refresh(refreshTokenDto: RefreshTokenDto): Promise<Tokens> {
     if (!refreshTokenDto?.refreshToken)
       throw new NoRefreshTokenException();

@@ -1,6 +1,22 @@
-import { Controller, UseInterceptors, ClassSerializerInterceptor, Post, HttpCode, UsePipes, Body } from '@nestjs/common';
+import {
+  Controller,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  Post,
+  HttpCode,
+  UsePipes,
+  Body,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, User, createUserSchema, authUserSchema, AuthUserDto, RefreshTokenDto, refreshTokenSchema } from '../../dto/user';
+import {
+  CreateUserDto,
+  User,
+  createUserSchema,
+  authUserSchema,
+  AuthUserDto,
+  RefreshTokenDto,
+  refreshTokenSchema,
+} from '../../dto/user';
 import ZodValidationPipe from '../../pipes/zod-validation.pipe';
 import { ApiCreateNewInstanceResponse } from '../../decorators/ApiCreateNewInstanceResponse';
 import { ApiLoginResponse } from '../../decorators/ApiLoginResponse';
@@ -10,9 +26,7 @@ import { Public } from '../../decorators/Public';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @UseInterceptors(ClassSerializerInterceptor)
@@ -41,5 +55,5 @@ export class AuthController {
   @ApiRefreshTokensResponse(['auth'])
   async refresh(@Body() refreshTokenDto: RefreshTokenDto): Promise<Tokens> {
     return await this.authService.refresh(refreshTokenDto);
-  }  
+  }
 }
