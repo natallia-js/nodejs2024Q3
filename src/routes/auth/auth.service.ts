@@ -26,7 +26,7 @@ export class AuthService {
   async calcPasswordHash(password: string): Promise<string> {
     return await bcrypt.hash(
       password,
-      Number(this.configService.get('CRYPT_SALT') || '10'),
+      Number(this.configService.get('CRYPT_SALT')),
     );
   }
 

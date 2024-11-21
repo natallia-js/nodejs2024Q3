@@ -3,10 +3,10 @@ import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
-  private logger = new Logger('HTTP');
+  private readonly logger = new Logger(AppLoggerMiddleware.name);
 
   use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, path: url, originalUrl } = request;
+    const { ip, method, baseUrl, url, body, params } = request;
     const requestStartTime = new Date().getTime();
     const userAgent = request.get('user-agent') || '';
 
@@ -14,14 +14,10 @@ export class AppLoggerMiddleware implements NestMiddleware {
       const { statusCode } = response;
       const responseTime = new Date().getTime();
       const duration = responseTime - requestStartTime;
-
-      const message = `${method} ${originalUrl} ${statusCode} ${duration}ms`;
-
       const contentLength = response.get('content-length');
 
-      this.logger.log(
-        `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`
-      );
+      this.logger.log(`REQ: method=${method}, userAgent=${userAgent}, ip=${ip}, baseUrl=${baseUrl}, url=${url}, body=${JSON.stringify(body)}, params=${JSON.stringify(params)}; ` +
+                      `RESP: statusCode=${statusCode}, duration=${duration}msec, contentLength=${contentLength}`);
     });
 
     next();

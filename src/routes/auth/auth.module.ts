@@ -11,10 +11,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule,
     UsersModule,
-    JwtModule /*.register({
-      secret: 'secret123123',
-      signOptions: { expiresIn: '1h' },
-    })*/,
+    JwtModule,
   ],
   controllers: [AuthController],
   providers: [

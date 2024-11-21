@@ -12,20 +12,23 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+
+  const appConfig = app.get<ConfigService>(ConfigService);
+
   app.useGlobalFilters(new GlobalExceptionFilter());
+
   // Retrieving the singleton instance of the CustomLogger object
   app.useLogger(app.get(CustomLogger));
 
-  process.on('uncaughtException', (error) => {
-    Logger.error("Uncaught Exception:", error.message);
+  process.on('uncaughtException', (error: Error) => {
+    Logger.error('Uncaught Exception:', error.message);
   });
   
-  process.on('unhandledRejection', (reason, promise) => {
-    Logger.error("Unhandled Rejection:", promise, 'reason:', reason);
+  process.on('unhandledRejection', (reason: string, promise: Promise<any>) => {
+    Logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
   });
 
-  const appConfig = app.get<ConfigService>(ConfigService);
-  const PORT = Number(appConfig.get('PORT') || '4000');
+  const PORT = Number(appConfig.get('PORT'));
 
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
