@@ -12,13 +12,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+  
+  // Retrieving the singleton instance of the CustomLogger object
+  app.useLogger(app.get(CustomLogger));
 
   const appConfig = app.get<ConfigService>(ConfigService);
 
   app.useGlobalFilters(new GlobalExceptionFilter());
-
-  // Retrieving the singleton instance of the CustomLogger object
-  app.useLogger(app.get(CustomLogger));
 
   process.on('uncaughtException', (error: Error) => {
     Logger.error('Uncaught Exception:', error.message);

@@ -1,5 +1,7 @@
 export class FileInfoDto {
     filePath: string;
-    fileSize: number;
+    fileSizeInKb?: number;
+    modifyTime: Date;
+    isFile: boolean;
   }
   

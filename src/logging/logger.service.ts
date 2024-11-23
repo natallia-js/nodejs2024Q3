@@ -1,68 +1,41 @@
 
-import { LoggerService, Injectable, Scope, ConsoleLogger } from '@nestjs/common';
+import { Injectable, ConsoleLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as path from 'node:path';
 import { getDesiredLogLevelNames } from './logger.levels';
-import { FileInfoDto } from '../dto/fileInfo';
+import { LogFilesProcessor } from './log-files.processor';
+import { Semaphore } from 'async-mutex';
 
-// Specifying a default scope, to ensure that the provider can be shared across multiple classes.
-// The provider lifetime is strictly tied to the application lifecycle.
-// Once the application has bootstrapped, all providers have been instantiated.
-@Injectable({ scope: Scope.DEFAULT })
-export class CustomLogger extends ConsoleLogger implements LoggerService {
-
-  private readonly maxLogFileSizeInKb = Number(this.configService.get('MAX_LOG_FILE_SIZE_IN_KB'));
-  private readonly maxLogFilesCount = Number(this.configService.get('MAX_LOG_FILES_COUNT'));
-  private readonly currentDirectory = process.cwd();
+const maxConcurrentRequests = 1;
+@Injectable()
+export class CustomLogger extends ConsoleLogger {
+  private logFilesProcessor: LogFilesProcessor;
+  private semaphore = new Semaphore(maxConcurrentRequests);
 
   constructor(private configService: ConfigService) {
     super();
-    this.setLogLevels(getDesiredLogLevelNames(this.configService.get('LOG_LEVEL')));
+    const desiredLogLevelNames = getDesiredLogLevelNames(this.configService.get('LOG_LEVEL'));
+    this.setLogLevels(desiredLogLevelNames);
+    this.logFilesProcessor = new LogFilesProcessor({
+      baseDirectory: path.resolve(process.cwd(), 'logs'),
+      maxLogFileSizeInKb: Number(this.configService.get('MAX_LOG_FILE_SIZE_IN_KB')),
+      maxLogFilesCount: Number(this.configService.get('MAX_LOG_FILES_COUNT')),
+    });
   }
 
-  fs.readdirSync(folderPath)
-    .map(fileName => {
-      return path.join(folderPath, fileName);
-    })
-    .filter(isFile);
-
-  private getNextLogFileName(logLevel: string): string {
-    return '';
+  private getFormattedFileLogMessage(message: any, timestamp: string): string {
+    return `${timestamp} - ${message}\r\n`;
   }
 
-  // Creates a log file in a "log/{logLevel}" folder of the application, returns full file path
-  private createLogFile(logLevel: string): string {
-    //
-  }
-
-  private getCurrentLogFileInfo(logLevel: string): FileInfoDto | null {
-    //
-  }
-
-  private getLogFilesFolderContent(logLevel: string): string[] {
-    //
-  }
-
-  private writeDataToFile(filePath: string, data: any) {
-    //
-  }
-
-  private writeMessageInLogFile(logLevel: string, message: any) {
-    const currentLogFileInfo: FileInfoDto | null = this.getCurrentLogFileInfo(logLevel);
-    if (!currentLogFileInfo) {
-      // write to new file
-      this.createLogFile()
-      return;
-    }
-    if (currentLogFileInfo.fileSize < this.maxLogFileSizeInKb) {
-      // write to current file
-    } else {
-      // necessary to create new file
-      const allLogFiles = this.getLogFilesFolderContent(logLevel);
-      if (allLogFiles.length >= this.maxLogFilesCount) {
-        // delete the earliest log file
+  private async writeMessageInFile(logLevel: string, message: any) {
+    return await this.semaphore.runExclusive(async () => {
+      try {
+        const formattedMessage: string = this.getFormattedFileLogMessage(message, this.getTimestamp());
+        await this.logFilesProcessor.writeMessageInLogFile(logLevel, formattedMessage);
+      } catch (error) {
+        super.error(message);
       }
-      // create new log file, write to it
-    }
+    });
   }
 
   /**
@@ -72,7 +45,7 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
     // writing to console
     super.log(message);
     // writing to log file
-    this.writeMessageInLogFile('log', message);
+    this.writeMessageInFile('log', message);
   }
 
   /**
@@ -82,7 +55,7 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
     // writing to console
     super.error(message);
     // writing to log file
-    this.writeMessageInLogFile('error', message);
+    this.writeMessageInFile('error', message);
   }
 
   /**
@@ -92,7 +65,7 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
     // writing to console
     super.warn(message);
     // writing to log file
-    this.writeMessageInLogFile('warn', message);
+    this.writeMessageInFile('warn', message);
   }
 
   /**
@@ -102,7 +75,7 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
     // writing to console
     super.debug(message);
     // writing to log file
-    this.writeMessageInLogFile('debug', message);
+    this.writeMessageInFile('debug', message);
   }
 
   /**
@@ -112,6 +85,6 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
     // writing to console
     super.verbose(message);
     // writing to log file
-    this.writeMessageInLogFile('verbose', message);
+    this.writeMessageInFile('verbose', message);
   }
 }
