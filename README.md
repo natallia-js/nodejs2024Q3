@@ -24,7 +24,7 @@ docker [image] pull natalliaf/nodejs2024q3-service-postgresdb:latest
 git checkout auth_and_logging
 ```
 
-2. 
+2. Install all necessary dependencies:
 
 ```
 npm install
@@ -32,25 +32,19 @@ npm install
 
 3. Create .env file based on .env.example: ./.env
 
-Modify environment variables in .env file as needed.
+  Modify environment variables in .env file as needed. Specifying ports, make sure there are no port conflicts in your system.
 
-Specifying ports, make sure there are no port conflicts in your system.
-
-LOG_LEVEL environment variable can be one of: verbose, debug, log, warn, error.
+  LOG_LEVEL environment variable can be one of: verbose, debug, log, warn, error.
 Assuming that:
 
-  verbose - the lowest log level, enable detailed trace logging mainly for application troubleshooting
-
-  debug - used for application debugging purposes and to inspect run-time outcomes in development environments
-
-  log - used for application monitoring and to track request and response details or specific operation results
-
-  warn - used to review potential non-critical, non-friendly operation outcomes
-
-  error - the most helpful, and yet the most unwanted, log level;
+- verbose - the lowest log level, enable detailed trace logging mainly for application troubleshooting
+- debug - used for application debugging purposes and to inspect run-time outcomes in development environments
+- log - used for application monitoring and to track request and response details or specific operation results
+- warn - used to review potential non-critical, non-friendly operation outcomes
+- error - the most helpful, and yet the most unwanted, log level;
           enables detailed error tracking and helps to write error-free applications
 
-MAX_LOG_FILES_COUNT environment variable means that maximum number of log files of a definite log-level will be MAX_LOG_FILES_COUNT or MAX_LOG_FILES_COUNT + 1.
+  MAX_LOG_FILES_COUNT environment variable means that maximum number of log files of a definite log-level will be MAX_LOG_FILES_COUNT or MAX_LOG_FILES_COUNT + 1.
 
 ## Running application
 
@@ -126,6 +120,8 @@ npm run test:refresh
 ```
 
 to run all test with authorization.
+
+If everything is done in proper way, results will be like the following ones:
 
 ![auth test results](images_for_readme/auth-test-result.png)
 
