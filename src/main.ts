@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
-  
+
   // Retrieving the singleton instance of the CustomLogger object
   app.useLogger(app.get(CustomLogger));
 
@@ -23,7 +23,7 @@ async function bootstrap() {
   process.on('uncaughtException', (error: Error) => {
     Logger.error('Uncaught Exception:', error.message);
   });
-  
+
   process.on('unhandledRejection', (reason: string, promise: Promise<any>) => {
     Logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
   });
@@ -40,6 +40,9 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   await app.listen(PORT);
-  Logger.debug(`nodejs2024Q3-service application is runnning on: ${await app.getUrl()}`, 'Bootstrap');
+  Logger.debug(
+    `nodejs2024Q3-service application is runnning on: ${await app.getUrl()}`,
+    'Bootstrap',
+  );
 }
 bootstrap();

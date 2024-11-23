@@ -62,8 +62,7 @@ export class AuthService {
   }
 
   async refresh(refreshTokenDto: RefreshTokenDto): Promise<Tokens> {
-    if (!refreshTokenDto?.refreshToken)
-      throw new NoRefreshTokenException();
+    if (!refreshTokenDto?.refreshToken) throw new NoRefreshTokenException();
     try {
       const { userId, login }: PayloadDto = this.jwtService.verify(
         refreshTokenDto.refreshToken,

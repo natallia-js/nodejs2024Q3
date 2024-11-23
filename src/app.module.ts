@@ -31,8 +31,6 @@ import { AppLoggerMiddleware } from './middleware/app-logger.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AppLoggerMiddleware)
-      .forRoutes('*');
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
   }
 }

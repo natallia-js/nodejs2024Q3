@@ -1,4 +1,3 @@
-
 import { Injectable, ConsoleLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as path from 'node:path';
@@ -14,11 +13,15 @@ export class CustomLogger extends ConsoleLogger {
 
   constructor(private configService: ConfigService) {
     super();
-    const desiredLogLevelNames = getDesiredLogLevelNames(this.configService.get('LOG_LEVEL'));
+    const desiredLogLevelNames = getDesiredLogLevelNames(
+      this.configService.get('LOG_LEVEL'),
+    );
     this.setLogLevels(desiredLogLevelNames);
     this.logFilesProcessor = new LogFilesProcessor({
       baseDirectory: path.resolve(process.cwd(), 'logs'),
-      maxLogFileSizeInKb: Number(this.configService.get('MAX_LOG_FILE_SIZE_IN_KB')),
+      maxLogFileSizeInKb: Number(
+        this.configService.get('MAX_LOG_FILE_SIZE_IN_KB'),
+      ),
       maxLogFilesCount: Number(this.configService.get('MAX_LOG_FILES_COUNT')),
     });
   }
@@ -30,8 +33,14 @@ export class CustomLogger extends ConsoleLogger {
   private async writeMessageInFile(logLevel: string, message: any) {
     return await this.semaphore.runExclusive(async () => {
       try {
-        const formattedMessage: string = this.getFormattedFileLogMessage(message, this.getTimestamp());
-        await this.logFilesProcessor.writeMessageInLogFile(logLevel, formattedMessage);
+        const formattedMessage: string = this.getFormattedFileLogMessage(
+          message,
+          this.getTimestamp(),
+        );
+        await this.logFilesProcessor.writeMessageInLogFile(
+          logLevel,
+          formattedMessage,
+        );
       } catch (error) {
         super.error(message);
       }
@@ -41,7 +50,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'log' level log.
    */
-  log(message: any, ...optionalParams: any[]) {
+  log(message: any/*, ...optionalParams: any[]*/) {
     // writing to console
     super.log(message);
     // writing to log file
@@ -51,7 +60,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write an 'error' level log.
    */
-  error(message: any, ...optionalParams: any[]) {
+  error(message: any/*, ...optionalParams: any[]*/) {
     // writing to console
     super.error(message);
     // writing to log file
@@ -61,7 +70,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'warn' level log.
    */
-  warn(message: any, ...optionalParams: any[]) {
+  warn(message: any/*, ...optionalParams: any[]*/) {
     // writing to console
     super.warn(message);
     // writing to log file
@@ -71,7 +80,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'debug' level log.
    */
-  debug(message: any, ...optionalParams: any[]) {
+  debug(message: any/*, ...optionalParams: any[]*/) {
     // writing to console
     super.debug(message);
     // writing to log file
@@ -81,7 +90,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'verbose' level log.
    */
-  verbose(message: any, ...optionalParams: any[]) {
+  verbose(message: any/*, ...optionalParams: any[]*/) {
     // writing to console
     super.verbose(message);
     // writing to log file
