@@ -32,9 +32,9 @@ npm install
 
 3. Create .env file based on .env.example: ./.env
 
-  Modify environment variables in .env file as needed. Specifying ports, make sure there are no port conflicts in your system.
+Modify environment variables in .env file as needed. Specifying ports, make sure there are no port conflicts in your system.
 
-  LOG_LEVEL environment variable can be one of: verbose, debug, log, warn, error.
+LOG_LEVEL environment variable can be one of: verbose, debug, log, warn, error.
 Assuming that:
 
 - verbose - the lowest log level, enable detailed trace logging mainly for application troubleshooting
@@ -44,7 +44,7 @@ Assuming that:
 - error - the most helpful, and yet the most unwanted, log level;
           enables detailed error tracking and helps to write error-free applications
 
-  MAX_LOG_FILES_COUNT environment variable means that maximum number of log files of a definite log-level will be MAX_LOG_FILES_COUNT or MAX_LOG_FILES_COUNT + 1.
+MAX_LOG_FILES_COUNT environment variable means that maximum number of log files of a definite log-level will be MAX_LOG_FILES_COUNT or MAX_LOG_FILES_COUNT + 1.
 
 ## Running application
 
