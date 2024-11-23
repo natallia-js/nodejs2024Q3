@@ -4,12 +4,16 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-- Download and install Docker and Docker Compose.
+- Download and install Docker and Docker Compose (only for running PostgreSQL if you do not have PostgreSQL installed in your system).
 
 ## Downloading
 
 ```
+1. application:
 git clone https://github.com/natallia-js/nodejs2024Q3-service.git
+
+2. my database docker image (if necessary):
+docker [image] pull natalliaf/nodejs2024q3-service-postgresdb:latest
 ```
 
 ## Getting started
@@ -17,16 +21,56 @@ git clone https://github.com/natallia-js/nodejs2024Q3-service.git
 1. Switch to the necessary branch:
 
 ```
-git checkout docker
+git checkout auth_and_logging
 ```
 
-2. Create .env file (based on .env.example): ./.env
+2. 
 
-(modify environment variables as needed; specifying ports, make sure there are no port conflicts in your system)
+```
+npm install
+```
+
+3. Create .env file based on .env.example: ./.env
+
+Modify environment variables in .env file as needed.
+
+Specifying ports, make sure there are no port conflicts in your system.
+
+LOG_LEVEL environment variable can be one of: verbose, debug, log, warn, error.
+Assuming that:
+
+  verbose - the lowest log level, enable detailed trace logging mainly for application troubleshooting
+
+  debug - used for application debugging purposes and to inspect run-time outcomes in development environments
+
+  log - used for application monitoring and to track request and response details or specific operation results
+
+  warn - used to review potential non-critical, non-friendly operation outcomes
+
+  error - the most helpful, and yet the most unwanted, log level;
+          enables detailed error tracking and helps to write error-free applications
+
+MAX_LOG_FILES_COUNT environment variable means that maximum number of log files of a definite log-level will be MAX_LOG_FILES_COUNT or MAX_LOG_FILES_COUNT + 1.
 
 ## Running application
 
-Use Docker Compose to run the application:
+Two ways to run the application are possible:
+
+1. To run in development mode:
+
+```
+npm run start:prisma:dev
+```
+
+To run in production mode:
+
+```
+npm run build
+
+npm run start:prod
+```
+
+2. Use Docker Compose to run the application:
 
 ```
 npm run docker:up:build
@@ -44,8 +88,9 @@ The second command just starts services, without building them.
 
 In both cases application is started in development mode and automatically rebuilds on changes made in source code.
 
-After starting the app on port (4000 as default) you can access it in your browser (http://localhost:4000) and open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+## After running the application
+
+After starting the app on port (4000 as default) you can access it in your browser (http://localhost:4000) and open in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 
 ## How to stop running containers
 
@@ -66,65 +111,25 @@ To remove all the mentioned above including volumes:
 ```
 npm run docker:down:volumes
 ```
-
-## Where to find built images
-
-Built application and database images are pushed to DockerHub:
-
-```
-natalliaf/nodejs2024q3-service-app:latest (image size 452.98 Mb)
-natalliaf/nodejs2024q3-service-postgresdb:latest (image size 426.71 Mb)
-```
-
-## Docker security scan
-
-You can use the following npm scripts to scan Docker images for vulnerabilities:
-
-1. To display a complete view of all the vulnerabilities in the image:
-
-```
-npm run docker:scan:app:cves (for application image)
-npm run docker:scan:db:cves (for database image)
-```
-
-2.  To display a quick overview of an image (an overview of the vulnerabilities found in a given image and its base image):
-
-```
-npm run docker:scan:app:quickview (for application image)
-npm run docker:scan:db:quickview (for database image)
-```
-
 ## Testing
 
-Make sure, before testing, to do the following:
+Run the application [in container]. After application running open new terminal and enter:
 
 ```
-npm install
+npm run test:auth
 ```
 
-Then run the application [in container]. After application running open new terminal and enter:
-
-To run all tests without authorization
-
-auth.module.ts
-
-comment
-
-{
-    provide: APP_GUARD,
-    useClass: AuthGuard,
-},
+and
 
 ```
-npm run test
+npm run test:refresh
 ```
 
-!Attention: some tests on `npm run test` may fail due to @unique constraint on model User.
-Remove this constraint, recreate Prisma Client and reapply migrations.
+to run all test with authorization.
 
-![test results](images_for_readme/no-auth-test-results1.png)
+![auth test results](images_for_readme/auth-test-result.png)
 
-![test results](images_for_readme/no-auth-test-results2.png)
+![refresh test results](images_for_readme/refresh-test-result.png)
 
 To run only one of all test suites
 

@@ -50,7 +50,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'log' level log.
    */
-  log(message: any/*, ...optionalParams: any[]*/) {
+  log(message: any /*, ...optionalParams: any[]*/) {
     // writing to console
     super.log(message);
     // writing to log file
@@ -60,7 +60,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write an 'error' level log.
    */
-  error(message: any/*, ...optionalParams: any[]*/) {
+  error(message: any /*, ...optionalParams: any[]*/) {
     // writing to console
     super.error(message);
     // writing to log file
@@ -70,7 +70,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'warn' level log.
    */
-  warn(message: any/*, ...optionalParams: any[]*/) {
+  warn(message: any /*, ...optionalParams: any[]*/) {
     // writing to console
     super.warn(message);
     // writing to log file
@@ -80,7 +80,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'debug' level log.
    */
-  debug(message: any/*, ...optionalParams: any[]*/) {
+  debug(message: any /*, ...optionalParams: any[]*/) {
     // writing to console
     super.debug(message);
     // writing to log file
@@ -90,7 +90,7 @@ export class CustomLogger extends ConsoleLogger {
   /**
    * Write a 'verbose' level log.
    */
-  verbose(message: any/*, ...optionalParams: any[]*/) {
+  verbose(message: any /*, ...optionalParams: any[]*/) {
     // writing to console
     super.verbose(message);
     // writing to log file
