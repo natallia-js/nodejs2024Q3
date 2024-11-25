@@ -107,7 +107,7 @@ npm run start:prod
 
 After starting the app on port (4000 as default) you can access it in your browser (http://localhost:4000) and open in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 
-Logs are written in a Log folder of the application, each type of logs in a separate folder.
+Logs are written in a 'logs' folder of the application, each type of logs in a separate folder.
 
 ## Testing
 
