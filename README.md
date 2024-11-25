@@ -52,8 +52,16 @@ Two ways to run the application are possible:
 
 1. To run in development mode:
 
+on first run:
+
 ```
 npm run start:prisma:dev
+```
+
+subsequent runs:
+
+```
+npm run start:dev
 ```
 
 To run in production mode:
@@ -119,7 +127,7 @@ and
 npm run test:refresh
 ```
 
-to run all test with authorization.
+to run all tests with authorization.
 
 If everything is done in proper way, results will be like the following ones:
 
@@ -148,3 +156,44 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+
+ Pull the Official PostgreSQL Image
+
+ ```
+ docker pull postgres
+ ```
+ 
+ Create and Run a PostgreSQL Container
+
+ ```
+ docker run -d --name mypostgres -p 5432:5432 -e POSTGRES_PASSWORD=yourpassword postgres
+ ```
+
+Let’s break down the command:
+-d: Runs the container in detached mode, allowing it to run in the background.
+--name mypostgres: Assigns a name to the container for easy reference.
+-p 5432:5432: Maps the container's port 5432 to the host's port 5432.
+-e POSTGRES_PASSWORD=yourpassword: Sets the password for the default postgres user.
+postgres: Specifies the image to use for creating the container.
+
+To ensure that the PostgreSQL container is running, use the following command:
+
+```
+docker ps
+```
+
+Now that our PostgreSQL container is up and running, let’s connect to the database.
+We can do this by executing the psql command inside the container:
+
+```
+docker exec -it mypostgres psql -U postgres    
+```
+
+This command opens an interactive terminal inside the container and connects to the PostgreSQL database using the postgres user.
+
+Execute the "psql" command along with the hostname and user name to make a connection with the Postgres Database Server:
+
+```
+psql -h localhost -U postgres
+```
