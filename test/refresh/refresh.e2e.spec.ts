@@ -69,6 +69,8 @@ describe('Refresh (e2e)', () => {
     it('should correctly get new tokens pair', async () => {
       const response = await request
         .post(authRoutes.refresh)
+        .set('Accept', headers['Accept'])
+        .set('Authorization', headers['Authorization'])
         .send({ refreshToken: userTokens.refreshToken });
 
       expect(response.statusCode).toBe(HttpStatus.OK);
@@ -83,13 +85,17 @@ describe('Refresh (e2e)', () => {
 
       const accessTokenPayload: TokenPayload = await verifyToken(accessToken);
       const refreshTokenPayload: TokenPayload = await verifyToken(refreshToken);
-      expect(refreshTokenPayload.exp).toBeGreaterThan(accessTokenPayload.exp);
+      expect(refreshTokenPayload.exp).toBeGreaterThan(
+        accessTokenPayload.exp || 0,
+      );
     });
 
     it('should fail with 403 (invalid refresh token)', async () => {
       const invalidRefreshToken = Math.random().toString();
       const response = await request
         .post(authRoutes.refresh)
+        .set('Accept', headers['Accept'])
+        .set('Authorization', headers['Authorization'])
         .send({ refreshToken: invalidRefreshToken });
 
       expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
@@ -108,6 +114,8 @@ describe('Refresh (e2e)', () => {
       const refreshToken = generateRefreshToken(payload, { expiresIn: '0s' });
       const response = await request
         .post(authRoutes.refresh)
+        .set('Accept', headers['Accept'])
+        .set('Authorization', headers['Authorization'])
         .send({ refreshToken });
       expect(response.statusCode).toBe(HttpStatus.FORBIDDEN);
     });
